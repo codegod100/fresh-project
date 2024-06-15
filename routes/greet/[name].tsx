@@ -40,10 +40,12 @@ export const handler = {
     const form = await req.formData();
     const name = form.get("name");
     const data = await kv.get(["preferences", name]);
-    if (data.value.score) {
+    if (data?.value.score) {
       console.log("got score", data.value.score);
     } else {
-      await kv.set(["preferences", name], { score: "amazing" });
+      const encoder = new TextEncoder();
+      const view = encoder.encode("€");
+      await kv.set(["preferences", name], { score: "amazing", view });
     }
     // const headers = new Headers();
     console.log({ name });
