@@ -54,6 +54,9 @@ export function getPostsByUser(username: string): Effect.Effect<Post[], Error> {
     return Effect.tryPromise(async () => {
         const s = await kv.get(["posts", username]);
         let posts = s.value as Post[];
+        if (!posts) {
+            posts = [];
+        }
         posts = posts.filter((obj1, i, arr) =>
             arr.findIndex((obj2) =>
                 JSON.stringify(obj2) === JSON.stringify(obj1)
