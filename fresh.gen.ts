@@ -9,6 +9,7 @@ import * as $api_joke from "./routes/api/joke.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
+import * as $posts_name_ from "./routes/posts/[name].tsx";
 import * as $posts_create from "./routes/posts/create.tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $Yolo from "./islands/Yolo.tsx";
@@ -23,6 +24,7 @@ const manifest = {
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
+    "./routes/posts/[name].tsx": $posts_name_,
     "./routes/posts/create.tsx": $posts_create,
   },
   islands: {

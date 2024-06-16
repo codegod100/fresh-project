@@ -38,7 +38,28 @@ export function userBySession(session_id: string): Effect.Effect<User, Error> {
 export function savePost(post: Post): Effect.Effect<Post, Error> {
     return Effect.tryPromise(async () => {
         await kv.set(["posts", post.user.username, post.title], post);
+        const s = await kv.get(["posts", post.user.username]);
+        let posts = s.value as Post[];
+        if (!posts) {
+            posts = [];
+        }
+        posts = Array.from(posts);
+        posts.push(post);
+        await kv.set(["posts", post.user.username], posts);
         return post;
+    });
+}
+
+export function getPostsByUser(username: string): Effect.Effect<Post[], Error> {
+    return Effect.tryPromise(async () => {
+        const s = await kv.get(["posts", username]);
+        let posts = s.value as Post[];
+        posts = posts.filter((obj1, i, arr) =>
+            arr.findIndex((obj2) =>
+                JSON.stringify(obj2) === JSON.stringify(obj1)
+            ) === i
+        );
+        return Array.from(posts);
     });
 }
 export function getUser(username: string): Effect.Effect<User, Error> {

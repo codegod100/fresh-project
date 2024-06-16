@@ -10,7 +10,6 @@ interface State {
 
 export async function handler(req: Request, ctx: FreshContext<State>) {
     const program = Effect.gen(function* () {
-        console.log({ url: req.url });
         console.log({ route: ctx.route });
         const cookies = getCookies(req.headers);
         const session_id = cookies["session_id"];
@@ -20,8 +19,6 @@ export async function handler(req: Request, ctx: FreshContext<State>) {
             ctx.state.user = user;
         }
     });
-    const location = req.headers.get("Location");
-    console.log({ location });
     await Effect.runPromise(program);
     const redirects = ["/posts/create"];
 
