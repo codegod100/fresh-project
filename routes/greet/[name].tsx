@@ -1,4 +1,4 @@
-import { PageProps } from "$fresh/server.ts";
+import { Handlers, PageProps } from "$fresh/server.ts";
 import { getUser, saveUser, User } from "../lib.ts";
 import { Effect } from "npm:effect";
 
@@ -40,7 +40,7 @@ export default function Greet(props: PageProps<User>) {
 }
 
 export const handler: Handlers<User> = {
-  async GET(req, ctx) {
+  async GET(_req, ctx) {
     const program = Effect.gen(function* () {
       let user = yield* getUser(ctx.params.name);
       console.log({ user });
@@ -57,7 +57,7 @@ export const handler: Handlers<User> = {
   },
   async POST(req, ctx) {
     const form = await req.formData();
-    const email = form.get("email");
+    const email = form.get("email") as string;
     const program = Effect.gen(function* () {
       let user = yield* getUser(ctx.params.name);
       user.email = email;
