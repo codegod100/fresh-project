@@ -4,6 +4,7 @@ import { Signal } from "@preact/signals";
 interface ReplyProps {
     client: Signal<SupabaseClient>;
     post_id: number;
+    comment_id?: number;
 }
 export default function (props: ReplyProps) {
     console.log({ props });
@@ -23,6 +24,7 @@ export default function (props: ReplyProps) {
                 body: "test",
                 user_id: u.data.id,
                 post_id: props.post_id,
+                comment_id: props.comment_id,
             })
             .single();
         console.log({ resp });

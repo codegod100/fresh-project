@@ -1,4 +1,9 @@
-import { defineRoute, FreshContext, RouteContext } from "$fresh/server.ts";
+import {
+    defineRoute,
+    FreshContext,
+    PageProps,
+    RouteContext,
+} from "$fresh/server.ts";
 import Reply from "../../islands/Reply.tsx";
 import SupaClient from "../../islands/SupaClient.tsx";
 import { supabase } from "../lib.ts";
@@ -13,12 +18,18 @@ interface Post {
     category: string;
 }
 interface Comment {
+    id: number;
     body: string;
     username: string;
 }
-const comments: Comment[] = [];
-let post: Post;
-export default function (req: Request, ctx: RouteContext) {
+
+interface Data {
+    post: Post;
+    comments: Comment[];
+}
+
+export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
+    const { post, comments } = data;
     let empty: SupabaseClient;
     const signal = useSignal(empty);
     const creds: [string, string] = [
@@ -49,7 +60,11 @@ export default function (req: Request, ctx: RouteContext) {
                         <div>Body: {comment.body}</div>
                         <div>User: {comment.username}</div>
                         <div>
-                            <Reply client={signal} post_id={post.id} />
+                            <Reply
+                                client={signal}
+                                post_id={post.id}
+                                comment_id={comment.id}
+                            />
                         </div>
                     </div>
                 ))}
@@ -60,16 +75,22 @@ export default function (req: Request, ctx: RouteContext) {
 
 export const handler = {
     async GET(req, ctx) {
+        const comments: Comment[] = [];
+        let post: Post;
         let resp = await supabase
             .from("users")
             .select(
-                "username, posts ( title, body, category, id ), comments ( body )",
+                "username, posts ( title, body, category, id ), comments ( id, body )",
             )
             .eq("posts.id", ctx.params.id);
 
         resp.data?.forEach((entry) => {
             entry.comments.forEach((comment) => {
-                comments.push({ username: entry.username, body: comment.body });
+                comments.push({
+                    username: entry.username,
+                    body: comment.body,
+                    id: comment.id,
+                });
             });
             entry.posts.forEach((p) => {
                 post = {
@@ -81,6 +102,6 @@ export const handler = {
                 };
             });
         });
-        return await ctx.render();
+        return await ctx.render({ post, comments });
     },
 };
