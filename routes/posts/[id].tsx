@@ -21,6 +21,7 @@ interface Comment {
     id: number;
     body: string;
     username: string;
+    nested: Comment[];
 }
 
 interface Data {
@@ -66,6 +67,21 @@ export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
                                 comment_id={comment.id}
                             />
                         </div>
+                        {comment.nested.map((nested) => {
+                            return (
+                                <div class="pl-2 mt-2">
+                                    <div>Body: {nested.body}</div>
+                                    <div>User: {nested.username}</div>
+                                    <div>
+                                        <Reply
+                                            client={signal}
+                                            post_id={post.id}
+                                            comment_id={nested.id}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 ))}
             </div>
@@ -76,20 +92,29 @@ export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
 export const handler = {
     async GET(req, ctx) {
         const comments: Comment[] = [];
+        let nestedComments = {};
         let post: Post;
         let resp = await supabase
             .from("users")
             .select(
-                "username, posts ( title, body, category, id ), comments ( id, body )",
+                "username, posts ( title, body, category, id ), comments ( id, body, comment_id )",
             )
             .eq("posts.id", ctx.params.id);
-
+        console.log(JSON.stringify(resp, null, 2));
         resp.data?.forEach((entry) => {
             entry.comments.forEach((comment) => {
+                if (comment.comment_id) {
+                    if (!nestedComments[comment.comment_id]) {
+                        nestedComments[comment.comment_id] = [];
+                    }
+                    comment.username = entry.username;
+                    nestedComments[comment.comment_id].push(comment);
+                }
                 comments.push({
                     username: entry.username,
                     body: comment.body,
                     id: comment.id,
+                    nested: [],
                 });
             });
             entry.posts.forEach((p) => {
@@ -101,6 +126,11 @@ export const handler = {
                     body: p.body,
                 };
             });
+        });
+        comments.forEach((comment) => {
+            if (nestedComments[comment.id]) {
+                comment.nested = nestedComments[comment.id];
+            }
         });
         return await ctx.render({ post, comments });
     },

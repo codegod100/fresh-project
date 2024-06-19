@@ -9,6 +9,7 @@ import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_token from "./routes/api/token.ts";
 import * as $create_post from "./routes/create/post.tsx";
+import * as $foo from "./routes/foo.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
@@ -32,6 +33,7 @@ const manifest = {
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/token.ts": $api_token,
     "./routes/create/post.tsx": $create_post,
+    "./routes/foo.tsx": $foo,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
