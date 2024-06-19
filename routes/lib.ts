@@ -2,7 +2,22 @@ import { Console, Effect } from "npm:effect";
 import { v4 } from "jsr:@std/uuid";
 const kv = await Deno.openKv();
 
+import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
+
+const supabase_url = Deno.env.get("SUPABASE_URL") as string;
+const anon_key = Deno.env.get("ANON_KEY") as string;
+export const supabase = createClient(
+    supabase_url,
+    anon_key,
+);
+
+export async function getUser() {
+    const { data, error } = await supabase.auth.getUser();
+    return { data, error };
+}
+
 export type User = {
+    id: string;
     username: string;
     email?: string;
     buffer?: ArrayBuffer;
@@ -65,12 +80,12 @@ export function getPostsByUser(username: string): Effect.Effect<Post[], Error> {
         return Array.from(posts);
     });
 }
-export function getUser(username: string): Effect.Effect<User, Error> {
-    return Effect.tryPromise(async () => {
-        const s = await kv.get(["users", username]);
-        return s.value as User;
-    });
-}
+// export function getUser(username: string): Effect.Effect<User, Error> {
+//     return Effect.tryPromise(async () => {
+//         const s = await kv.get(["users", username]);
+//         return s.value as User;
+//     });
+// }
 
 export function saveUser(user: User): Effect.Effect<User, Error> {
     return Effect.tryPromise(async () => {

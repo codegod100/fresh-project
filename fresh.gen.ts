@@ -6,12 +6,16 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_joke from "./routes/api/joke.ts";
+import * as $api_token from "./routes/api/token.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
+import * as $login from "./routes/login.tsx";
 import * as $posts_name_ from "./routes/posts/[name].tsx";
 import * as $posts_create from "./routes/posts/create.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $CreatePost from "./islands/CreatePost.tsx";
+import * as $Signin from "./islands/Signin.tsx";
 import * as $Yolo from "./islands/Yolo.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -21,14 +25,18 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_middleware.ts": $_middleware,
     "./routes/api/joke.ts": $api_joke,
+    "./routes/api/token.ts": $api_token,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
+    "./routes/login.tsx": $login,
     "./routes/posts/[name].tsx": $posts_name_,
     "./routes/posts/create.tsx": $posts_create,
   },
   islands: {
     "./islands/Counter.tsx": $Counter,
+    "./islands/CreatePost.tsx": $CreatePost,
+    "./islands/Signin.tsx": $Signin,
     "./islands/Yolo.tsx": $Yolo,
   },
   baseUrl: import.meta.url,
