@@ -2,23 +2,22 @@ import { FreshContext } from "$fresh/server.ts";
 import { getCookies } from "jsr:@std/http/cookie";
 import { supabase, User, userBySession } from "./lib.ts";
 import { Effect } from "npm:effect";
+import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 
 interface State {
     data: string;
     user: User;
+    supaCreds: [
+        supabase_url: string,
+        anon_key: string,
+    ];
 }
 
 export async function handler(_req, ctx) {
-    // const resp = await supabase.auth.getUser();
-    // const user = resp.data.user;
-    // const redirects = ["/posts/create"];
-    // console.log({ resp });
-    // if (!user && redirects.includes(ctx.route)) {
-    //     return new Response("", {
-    //         status: 307,
-    //         headers: { Location: "/login" },
-    //     });
-    // }
+    const supabase_url = Deno.env.get("SUPABASE_URL") as string;
+    const anon_key = Deno.env.get("ANON_KEY") as string;
+    ctx.state.supaCreds = [supabase_url, anon_key];
+
     return ctx.next();
 }
 // export async function handler(req: Request, ctx: FreshContext<State>) {

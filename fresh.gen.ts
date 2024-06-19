@@ -19,6 +19,7 @@ import * as $Counter from "./islands/Counter.tsx";
 import * as $CreatePost from "./islands/CreatePost.tsx";
 import * as $Reply from "./islands/Reply.tsx";
 import * as $Signin from "./islands/Signin.tsx";
+import * as $SupaClient from "./islands/SupaClient.tsx";
 import * as $Yolo from "./islands/Yolo.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -43,6 +44,7 @@ const manifest = {
     "./islands/CreatePost.tsx": $CreatePost,
     "./islands/Reply.tsx": $Reply,
     "./islands/Signin.tsx": $Signin,
+    "./islands/SupaClient.tsx": $SupaClient,
     "./islands/Yolo.tsx": $Yolo,
   },
   baseUrl: import.meta.url,
