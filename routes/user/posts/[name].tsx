@@ -1,5 +1,5 @@
 import { FreshContext, RouteContext } from "$fresh/src/server/types.ts";
-import { getPostsByUser, getUser, Post, supabase, User } from "../lib.ts";
+import { getPostsByUser, getUser, Post, supabase, User } from "../../lib.ts";
 import { Effect } from "npm:effect";
 
 export default async function ShowPosts(req: Request, ctx: RouteContext) {

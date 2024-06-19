@@ -59,12 +59,12 @@ export default function (props: SigninProps) {
     });
     return (
         <div>
-            <button onClick={() => signin(supabase)}>Yolo</button>
-            <div>
-                <button onClick={() => getSession(supabase)}>
-                    Get session
-                </button>
-            </div>
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-5 rounded"
+                onClick={() => signin(supabase)}
+            >
+                Login
+            </button>
         </div>
     );
 }

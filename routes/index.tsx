@@ -1,10 +1,10 @@
 import { FreshContext, PageProps } from "$fresh/server.ts";
-import { createSession, getUser, saveUser, User } from "./lib.ts";
+import { createSession, getUser, saveUser, supabase, User } from "./lib.ts";
 import { Effect } from "npm:effect";
 import { Cookie, getCookies, setCookie } from "jsr:@std/http/cookie";
 
-export default function Home(props: PageProps) {
-  const user = props.state.user as User;
+export default async function Home(props: PageProps) {
+  const user = props.state?.user as User;
   const login = (
     <div>
       <form method="POST">
@@ -13,14 +13,31 @@ export default function Home(props: PageProps) {
       </form>
     </div>
   );
-  console.log({ user: props.state.user });
+  let resp = await supabase
+    .from("users")
+    .select("username, posts ( title, body, category,id )")
+    .single();
+  const posts = resp.data?.posts.map((post) => (
+    <div class="mb-2">
+      <div>
+        Title: <a href={`/posts/${post.id}`}>{post.title}</a>{" "}
+        {post.category && <span>[{post.category}]</span>}
+      </div>
+      <div>
+        Author: {resp.data.username}
+      </div>
+      {/* <div>Body: {post.body}</div> */}
+    </div>
+  ));
   return (
     <div>
-      <h1>{Deno.env.get("SITE_NAME")}</h1>
-      {user && <div>Hello {user.username}</div>}
-      {!user && login}
       <div>
-        <h2>Recent Posts</h2>
+        <h2 class="text-2xl font-extrabold dark:text-white mb-3">
+          Recent Posts
+        </h2>
+        <div class="pl-2">
+          {posts}
+        </div>
       </div>
     </div>
   );
