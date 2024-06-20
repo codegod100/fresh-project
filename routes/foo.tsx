@@ -1,7 +1,5 @@
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import { PostgrestSingleResponse } from "npm:@supabase/postgrest-js";
-import { JSXInternal } from "https://esm.sh/v128/preact@10.19.6/src/jsx.d.ts";
-import { h } from "preact";
 const supabase_url = Deno.env.get("SUPABASE_URL") as string;
 const anon_key = Deno.env.get("ANON_KEY") as string;
 const supabase = createClient(

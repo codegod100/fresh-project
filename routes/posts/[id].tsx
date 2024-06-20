@@ -60,7 +60,11 @@ async function fillChildren(comments: Comment[]) {
             return (
                 <div class="pl-2">
                     {child.username}: {child.body}{" "}
-                    <Reply post_id={post.id} client={signal} />
+                    <Reply
+                        post_id={post.id}
+                        client={signal}
+                        comment_id={child.id}
+                    />
                     <div class="mt-2">
                         {childTags(child.children, post, signal)}
                     </div>
