@@ -1,9 +1,9 @@
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 
-async function signin(supabase: SupabaseClient) {
+async function signin(supabase: SupabaseClient, redirect_url: string) {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "discord",
-        options: { redirectTo: Deno.env.get("REDIRECT_URL") },
+        options: { redirectTo: redirect_url },
     });
     console.log({ data });
     return { data, error };
@@ -17,14 +17,25 @@ async function getSession(supabase: SupabaseClient) {
 interface SigninProps {
     supabase_url: string;
     anon_key: string;
+    redirect_url: string;
+}
+
+async function handler(supabase: SupabaseClient) {
+    const resp = await supabase.auth.getUser();
+    if (!resp.error) {
+        window.location.href = "/";
+    }
+    // console.log({ resp });
 }
 
 export default function (props: SigninProps) {
-    const { supabase_url, anon_key } = props;
+    const { supabase_url, anon_key, redirect_url } = props;
     const supabase = createClient(
         supabase_url,
         anon_key,
     );
+    globalThis.addEventListener("load", () => handler(supabase));
+
     supabase.auth.onAuthStateChange(async (event, session) => {
         if (session && session.provider_token) {
             window.localStorage.setItem(
@@ -61,7 +72,7 @@ export default function (props: SigninProps) {
         <div>
             <button
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-5 rounded"
-                onClick={() => signin(supabase)}
+                onClick={() => signin(supabase, redirect_url)}
             >
                 Login
             </button>
