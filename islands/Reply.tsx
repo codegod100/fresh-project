@@ -1,5 +1,5 @@
 import { useSignal } from "@preact/signals";
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
+import { SupabaseClient } from "npm:@supabase/supabase-js";
 import { Signal } from "@preact/signals";
 interface ReplyProps {
     client: Signal<SupabaseClient>;
@@ -9,7 +9,13 @@ interface ReplyProps {
 export default function (props: ReplyProps) {
     const client = props.client.value;
     async function submitComment() {
-        const body = document.getElementById("comment").value as string;
+        const comment = document.getElementById(
+            "comment",
+        ) as HTMLTextAreaElement;
+        if (!comment) throw "fatal";
+        setTimeout(() => comment.focus(), 1);
+        // comment.focus();
+        const body = comment.value;
         const user = await client.auth.getUser();
         const user_id = user.data.user?.id;
         const u = await client
@@ -17,7 +23,7 @@ export default function (props: ReplyProps) {
             .select()
             .eq("user_id", user_id)
             .single();
-        const resp = await client
+        await client
             .from("comments").insert({
                 body,
                 user_id: u.data.id,
@@ -25,15 +31,14 @@ export default function (props: ReplyProps) {
                 comment_id: props.comment_id,
             })
             .single();
+        comment.hidden = true;
+        window.location.reload();
     }
-    let clicked = useSignal(false);
+    const clicked = useSignal(false);
     function showReply() {
         clicked.value = true;
     }
-    const post = (
-        <div>
-        </div>
-    );
+
     return (
         <div>
             <div id="response">
@@ -44,7 +49,8 @@ export default function (props: ReplyProps) {
             <div>
                 {clicked.value && (
                     <div>
-                        <textarea id="comment" class="border"></textarea>
+                        <textarea autofocus id="comment" class="border">
+                        </textarea>
                         <button onClick={submitComment}>Submit</button>
                     </div>
                 )}
