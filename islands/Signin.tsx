@@ -68,6 +68,8 @@ export default function (props: SigninProps) {
             window.localStorage.removeItem("oauth_provider_refresh_token");
         }
     });
+    console.log({ redirect_url });
+
     return (
         <div>
             <button
