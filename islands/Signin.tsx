@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 async function signin(supabase: SupabaseClient) {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "discord",
-        options: { redirectTo: "http://localhost:8000/login" },
+        options: { redirectTo: Deno.env.get("REDIRECT_URL") },
     });
     console.log({ data });
     return { data, error };
