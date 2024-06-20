@@ -34,14 +34,14 @@ async function fillChildren(comments: Comment[]) {
     function childTags(children: Comment[]) {
         return children.map((child) => {
             return (
-                <div>{child.id} {child.body} {childTags(child.children)}</div>
+                <div class="pl-2">
+                    {child.id} {child.body} {childTags(child.children)}
+                </div>
             );
         });
     }
-    const tags = comments.map((comment) => {
-        const children = childTags(comment.children);
-        return <div>{comment.id} {comment.body} {children}</div>;
-    });
+
+    const tags = childTags(comments);
     console.log({ tags });
     return (
         <div>
