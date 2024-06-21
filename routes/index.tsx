@@ -13,20 +13,19 @@ export default async function Home(props: PageProps) {
       </form>
     </div>
   );
-  let resp = await supabase
-    .from("users")
-    .select("username, posts ( title, body, category,id )")
-    .single();
-  const posts = resp.data?.posts.map((post) => (
+  const { data, error } = await supabase
+    .from("posts")
+    .select("title, body, category, id, users ( id,username )");
+
+  const posts = data?.map((post) => (
     <div class="mb-2">
       <div>
         Title: <a href={`/posts/${post.id}`}>{post.title}</a>{" "}
         {post.category && <span>[{post.category}]</span>}
       </div>
       <div>
-        Author: {resp.data.username}
+        Author: {post.users?.username}
       </div>
-      {/* <div>Body: {post.body}</div> */}
     </div>
   ));
   return (

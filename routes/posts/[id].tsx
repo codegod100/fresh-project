@@ -10,80 +10,28 @@ import SupaClient from "../../islands/SupaClient.tsx";
 import { supabase } from "../lib.ts";
 import { Signal, useSignal } from "@preact/signals";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
+import { Tables } from "../../types/supabase.ts";
 
 interface Post {
-    id: number;
-    title: string;
-    body: string;
     username: string;
-    category: string;
 }
 interface Comment {
-    user_id: number;
     id: number;
-    body: string;
-    username: string;
+    body: string | null;
+    parent_comment_id: number | null;
     children?: Comment[];
+    username: string;
 }
 
 interface Data {
     post: Post;
     comments: Comment[];
-    childFunc: (post: Post, signal: Signal) => JSXInternal.Element;
 }
 
-async function fillChildren(comments: Comment[]) {
-    for (const comment of comments) {
-        comment.children = [];
-        const resp = await supabase
-            .from("comments")
-            .select()
-            .eq("comment_id", comment.id);
-        if (resp.error) {
-            return;
-        }
-        for (const c of resp.data) {
-            const resp = await supabase
-                .from("users")
-                .select()
-                .eq("id", c.user_id)
-                .single();
-            c.username = resp.data.username;
-            comment.children.push(c);
-        }
-        await fillChildren(comment.children);
-    }
-    function childTags(children: Comment[], post: Post, signal: Signal) {
-        console.log("in childtags");
-        console.log({ post });
-        return children.map((child) => {
-            return (
-                <div class="pl-2">
-                    {child.username}: {child.body}{" "}
-                    <Reply
-                        post_id={post.id}
-                        client={signal}
-                        comment_id={child.id}
-                    />
-                    <div class="mt-2">
-                        {childTags(child.children, post, signal)}
-                    </div>
-                </div>
-            );
-        });
-    }
-
-    const tags = (post, signal) => childTags(comments, post, signal);
-    return (post, signal) => (
-        <div>
-            {tags(post, signal)}
-        </div>
-    );
-}
-export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
+export default function ({ data }: PageProps<Data>) {
     let empty: SupabaseClient;
     const signal = useSignal(empty);
-    const { post, comments, childFunc } = data;
+    const { post, comments } = data;
 
     const creds: [string, string] = [
         Deno.env.get("SUPABASE_URL") as string,
@@ -93,7 +41,6 @@ export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
     return (
         <div class="mb-2">
             <SupaClient supaCreds={creds} signal={signal} />
-
             <div>
                 Title: <a href={`/posts/${post.id}`}>{post.title}</a>
                 {post.category && <span>[{post.category}]</span>}
@@ -106,34 +53,59 @@ export default function ({ data }: PageProps<Data>, ctx: RouteContext) {
 
             <div>
                 <div class="mt-5 mb-1">Comments:</div>
-                {childFunc(post, signal)}
+                {comments.map((comment) => fillElements(comment))}
             </div>
         </div>
     );
 }
 
+let count = 0;
+function fillElements(comment: Comment) {
+    count++;
+    return (
+        <div class={`pl-${count}`}>
+            {comment.username}: {comment.body}
+            {comment.children?.map((comment) => (
+                fillElements(comment)
+            ))}
+        </div>
+    );
+}
+
+function fillChildren(this_comment: Comment, comments: Comment[]) {
+    this_comment.children = comments.filter((c) =>
+        c.parent_comment_id === this_comment.id
+    );
+}
 export const handler = {
-    async GET(req, ctx) {
-        let resp = await supabase
-            .from("users")
+    async GET(req: Request, ctx: FreshContext) {
+        const { data, error } = await supabase
+            .from("posts")
             .select(
-                "username, posts ( title, body, category, id ), comments ( id, body, user_id,comment_id )",
+                "title, body, category, id, comments(id, body, parent_comment_id, users(username)), users(username, id)",
             )
-            .eq("posts.id", ctx.params.id)
-            .is("comments.comment_id", null);
-        if (!resp.data) return;
-        console.log(resp.data);
-        let post: Post;
-        let comments: Comment[] = [];
-        for (const result of resp.data) {
-            for (const p of result.posts) {
-                post = { username: result.username, ...p };
-            }
-            for (const c of result.comments) {
-                comments.push({ username: result.username, ...c });
-            }
+            .eq("id", ctx.params.id)
+            .single();
+
+        console.log({ error });
+        if (error) throw error;
+        if (!data) return;
+        if (!data.users) return;
+        console.log({ data });
+        const comments = data.comments;
+        const base_comments = comments.filter((c) => !c.parent_comment_id);
+        for (const c of comments) {
+            c.username = c.users.username;
+            fillChildren(c, comments);
         }
-        let childFunc = await fillChildren(comments);
-        return await ctx.render({ post, comments, childFunc });
+        console.log({ base_comments });
+        const post = {
+            id: data.id,
+            title: data.title,
+            category: data.category,
+            body: data.body,
+            username: data.users.username,
+        };
+        return ctx.render({ post, comments: base_comments });
     },
 };

@@ -1,12 +1,13 @@
 import { Console, Effect } from "npm:effect";
 import { v4 } from "jsr:@std/uuid";
 const kv = await Deno.openKv();
+import { Database } from "../types/supabase.ts";
 
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 
 const supabase_url = Deno.env.get("SUPABASE_URL") as string;
 const anon_key = Deno.env.get("ANON_KEY") as string;
-export const supabase = createClient(
+export const supabase = createClient<Database>(
     supabase_url,
     anon_key,
 );
