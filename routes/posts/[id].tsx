@@ -21,6 +21,7 @@ interface Comment {
     parent_comment_id: number | null;
     children?: Comment[];
     username: string;
+    post_id: number;
 }
 
 interface Data {
@@ -53,20 +54,25 @@ export default function ({ data }: PageProps<Data>) {
 
             <div>
                 <div class="mt-5 mb-1">Comments:</div>
-                {comments.map((comment) => fillElements(comment))}
+                {comments.map((comment) => fillElements(comment, signal))}
             </div>
         </div>
     );
 }
 
-let count = 0;
-function fillElements(comment: Comment) {
-    count++;
+function fillElements(comment: Comment, signal) {
     return (
-        <div class={`pl-${count}`}>
+        <div class={"pl-2"}>
             {comment.username}: {comment.body}
+            <div>
+                <Reply
+                    post_id={comment.post_id}
+                    client={signal}
+                    parent_comment_id={comment.id}
+                />
+            </div>
             {comment.children?.map((comment) => (
-                fillElements(comment)
+                fillElements(comment, signal)
             ))}
         </div>
     );
@@ -95,6 +101,7 @@ export const handler = {
         const comments = data.comments;
         const base_comments = comments.filter((c) => !c.parent_comment_id);
         for (const c of comments) {
+            c.post_id = data.id;
             c.username = c.users.username;
             fillChildren(c, comments);
         }

@@ -4,7 +4,7 @@ import { Signal } from "@preact/signals";
 interface ReplyProps {
     client: Signal<SupabaseClient>;
     post_id: number;
-    comment_id?: number;
+    parent_comment_id?: number;
 }
 export default function (props: ReplyProps) {
     const client = props.client.value;
@@ -17,6 +17,7 @@ export default function (props: ReplyProps) {
         // comment.focus();
         const body = comment.value;
         const user = await client.auth.getUser();
+        console.log({ user });
         const user_id = user.data.user?.id;
         const u = await client
             .from("users")
@@ -28,7 +29,7 @@ export default function (props: ReplyProps) {
                 body,
                 user_id: u.data.id,
                 post_id: props.post_id,
-                comment_id: props.comment_id,
+                parent_comment_id: props.parent_comment_id,
             })
             .single();
         comment.hidden = true;
