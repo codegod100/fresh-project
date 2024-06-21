@@ -62,9 +62,9 @@ export default function ({ data }: PageProps<Data>) {
 
 function fillElements(comment: Comment, signal) {
     return (
-        <div class={"pl-2"}>
+        <div class="pl-2 border-dashed border-1 border-black">
             {comment.username}: {comment.body}
-            <div>
+            <div class="mb-2">
                 <Reply
                     post_id={comment.post_id}
                     client={signal}
@@ -88,8 +88,12 @@ export const handler = {
         const { data, error } = await supabase
             .from("posts")
             .select(
-                "title, body, category, id, comments(id, body, parent_comment_id, users(username)), users(username, id)",
+                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id)",
             )
+            .order("created_at", {
+                referencedTable: "comments",
+                ascending: false,
+            })
             .eq("id", ctx.params.id)
             .single();
 
