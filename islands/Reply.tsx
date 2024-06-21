@@ -13,7 +13,7 @@ export default function (props: ReplyProps) {
             "comment",
         ) as HTMLTextAreaElement;
         if (!comment) throw "fatal";
-        setTimeout(() => comment.focus(), 1);
+        setTimeout(() => comment.focus(), 100);
         // comment.focus();
         const body = comment.value;
         const user = await client.auth.getUser();
@@ -36,8 +36,16 @@ export default function (props: ReplyProps) {
         window.location.reload();
     }
     const clicked = useSignal(false);
-    function showReply() {
+    function showReply(event) {
+        event.preventDefault();
+
         clicked.value = true;
+        setTimeout(() => {
+            const comment = document.getElementById(
+                "comment",
+            );
+            comment.focus();
+        }, 100);
     }
 
     return (
@@ -50,7 +58,7 @@ export default function (props: ReplyProps) {
             <div>
                 {clicked.value && (
                     <div>
-                        <textarea autofocus id="comment" class="border">
+                        <textarea id="comment" class="border">
                         </textarea>
                         <button onClick={submitComment}>Submit</button>
                     </div>

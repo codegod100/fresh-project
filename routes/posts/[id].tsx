@@ -62,7 +62,7 @@ export default function ({ data }: PageProps<Data>) {
 
 function fillElements(comment: Comment, signal) {
     return (
-        <div class="pl-2 border-dashed border-1 border-black">
+        <div class="pl-2 border-dotted border border-black">
             {comment.username}: {comment.body}
             <div class="mb-2">
                 <Reply
