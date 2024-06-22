@@ -27,12 +27,11 @@ interface Comment {
 interface Data {
     post: Post;
     comments: Comment[];
+    signal: Signal;
 }
 
 export default function ({ data }: PageProps<Data>) {
-    let empty: SupabaseClient;
-    const signal = useSignal(empty);
-    const { post, comments } = data;
+    const { post, comments, signal } = data;
 
     const creds: [string, string] = [
         Deno.env.get("SUPABASE_URL") as string,
@@ -41,7 +40,7 @@ export default function ({ data }: PageProps<Data>) {
 
     return (
         <div class="mb-2">
-            <SupaClient supaCreds={creds} signal={signal} />
+            {/* <SupaClient supaCreds={creds} signal={signal} /> */}
             <div>
                 Title: <a href={`/posts/${post.id}`}>{post.title}</a>
                 {post.category && <span>[{post.category}]</span>}
@@ -97,11 +96,9 @@ export const handler = {
             .eq("id", ctx.params.id)
             .single();
 
-        console.log({ error });
         if (error) throw error;
         if (!data) return;
         if (!data.users) return;
-        console.log({ data });
         const comments = data.comments;
         const base_comments = comments.filter((c) => !c.parent_comment_id);
         for (const c of comments) {
@@ -109,7 +106,6 @@ export const handler = {
             c.username = c.users.username;
             fillChildren(c, comments);
         }
-        console.log({ base_comments });
         const post = {
             id: data.id,
             title: data.title,
@@ -117,6 +113,10 @@ export const handler = {
             body: data.body,
             username: data.users.username,
         };
-        return ctx.render({ post, comments: base_comments });
+        return ctx.render({
+            post,
+            comments: base_comments,
+            signal: ctx.state.signal,
+        });
     },
 };

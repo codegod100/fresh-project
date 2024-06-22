@@ -7,7 +7,8 @@
     "start": "deno run --unstable-ffi --unstable-kv -A --watch=static/,routes/ dev.ts",
     "build": "deno run --unstable-kv -A dev.ts build",
     "preview": "deno run -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "update": "deno run -A -r https://fresh.deno.dev/update .",
+    "wasmbuild": "deno run -A jsr:@deno/wasmbuild"
   },
   "lint": {
     "rules": {

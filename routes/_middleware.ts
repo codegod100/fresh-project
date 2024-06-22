@@ -3,21 +3,25 @@ import { getCookies } from "jsr:@std/http/cookie";
 import { supabase, User, userBySession } from "./lib.ts";
 import { Effect } from "npm:effect";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
+import { Signal, signal, useSignal } from "@preact/signals";
 
-interface State {
+export interface State {
     data: string;
     user: User;
     supaCreds: [
         supabase_url: string,
         anon_key: string,
     ];
+    signal: Signal;
 }
 
 export async function handler(_req, ctx) {
     const supabase_url = Deno.env.get("SUPABASE_URL") as string;
     const anon_key = Deno.env.get("ANON_KEY") as string;
     ctx.state.supaCreds = [supabase_url, anon_key];
-
+    let empty: SupabaseClient;
+    const s = signal<SupabaseClient>(empty);
+    ctx.state.signal = s;
     return ctx.next();
 }
 // export async function handler(req: Request, ctx: FreshContext<State>) {

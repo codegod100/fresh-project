@@ -58,7 +58,7 @@ export default function (props: ReplyProps) {
             <div>
                 {clicked.value && (
                     <div>
-                        <textarea id="comment" class="border">
+                        <textarea id="comment" class="border w-full h-28">
                         </textarea>
                         <button onClick={submitComment}>Submit</button>
                     </div>
