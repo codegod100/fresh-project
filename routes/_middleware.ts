@@ -22,6 +22,7 @@ export async function handler(_req, ctx) {
     let empty: SupabaseClient;
     const s = signal<SupabaseClient>(empty);
     ctx.state.signal = s;
+    ctx.state.client = createClient(supabase_url, anon_key);
     return ctx.next();
 }
 // export async function handler(req: Request, ctx: FreshContext<State>) {

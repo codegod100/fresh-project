@@ -14,13 +14,14 @@ import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
 import * as $login from "./routes/login.tsx";
 import * as $posts_id_ from "./routes/posts/[id].tsx";
+import * as $search from "./routes/search.tsx";
 import * as $user_posts_name_ from "./routes/user/posts/[name].tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $CreatePost from "./islands/CreatePost.tsx";
 import * as $Reply from "./islands/Reply.tsx";
+import * as $Search from "./islands/Search.tsx";
 import * as $Signin from "./islands/Signin.tsx";
 import * as $SupaClient from "./islands/SupaClient.tsx";
-import * as $Wasm from "./islands/Wasm.tsx";
 import * as $Yolo from "./islands/Yolo.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -38,15 +39,16 @@ const manifest = {
     "./routes/lib.ts": $lib,
     "./routes/login.tsx": $login,
     "./routes/posts/[id].tsx": $posts_id_,
+    "./routes/search.tsx": $search,
     "./routes/user/posts/[name].tsx": $user_posts_name_,
   },
   islands: {
     "./islands/Counter.tsx": $Counter,
     "./islands/CreatePost.tsx": $CreatePost,
     "./islands/Reply.tsx": $Reply,
+    "./islands/Search.tsx": $Search,
     "./islands/Signin.tsx": $Signin,
     "./islands/SupaClient.tsx": $SupaClient,
-    "./islands/Wasm.tsx": $Wasm,
     "./islands/Yolo.tsx": $Yolo,
   },
   baseUrl: import.meta.url,
