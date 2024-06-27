@@ -4,13 +4,12 @@ import {
     PageProps,
     RouteContext,
 } from "$fresh/server.ts";
-import { JSXInternal } from "https://esm.sh/v128/preact@10.19.6/src/jsx.d.ts";
 import Reply from "../../islands/Reply.tsx";
-import SupaClient from "../../islands/SupaClient.tsx";
-import { supabase } from "../lib.ts";
+import { serverClient, supabase } from "../lib.ts";
 import { Signal, useSignal } from "@preact/signals";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import { Tables } from "../../types/supabase.ts";
+import { getCookies } from "jsr:@std/http/cookie";
 
 interface Post {
     username: string;
@@ -33,14 +32,8 @@ interface Data {
 export default function ({ data }: PageProps<Data>) {
     const { post, comments, signal } = data;
 
-    const creds: [string, string] = [
-        Deno.env.get("SUPABASE_URL") as string,
-        Deno.env.get("ANON_KEY") as string,
-    ];
-
     return (
         <div class="mb-2">
-            {/* <SupaClient supaCreds={creds} signal={signal} /> */}
             <div>
                 Title: <a href={`/posts/${post.id}`}>{post.title}</a>
                 {post.category && <span>[{post.category}]</span>}
@@ -48,7 +41,7 @@ export default function ({ data }: PageProps<Data>) {
             <div>Body: {post.body}</div>
             <div>User: {post.username}</div>
             <div>
-                <Reply post_id={post.id} client={signal} />
+                <Reply post_id={post.id} />
             </div>
 
             <div>
@@ -66,7 +59,6 @@ function fillElements(comment: Comment, signal) {
             <div class="mb-2">
                 <Reply
                     post_id={comment.post_id}
-                    client={signal}
                     parent_comment_id={comment.id}
                 />
             </div>
@@ -83,6 +75,44 @@ function fillChildren(this_comment: Comment, comments: Comment[]) {
     );
 }
 export const handler = {
+    async POST(req: Request, ctx: FreshContext) {
+        const form = await req.formData();
+        const comment = form.get("comment");
+        const parent_id = form.get("parent_id");
+        const cookies = getCookies(req.headers);
+
+        const client = serverClient(cookies);
+        let { data, error } = await client.auth.getUser();
+        if (error) {
+            throw error;
+        }
+        let { data: user, error: error2 } = await client.from("users").select()
+            .eq(
+                "user_id",
+                data.user.id,
+            ).single();
+        if (error2) {
+            throw error2;
+        }
+        const result = await client
+            .from("comments").insert({
+                body: comment,
+                user_id: user.id,
+                post_id: ctx.params.id,
+                parent_comment_id: parent_id,
+            })
+            .single();
+        console.log({ result });
+        // return <script>window.location.href="/"</script>;
+        // return <div>Whatttt</div>;
+        // return await ctx.render();
+        const headers = new Headers();
+        headers.set("location", `/posts/${ctx.params.id}`);
+        return new Response(null, {
+            status: 303, // See Other
+            headers,
+        });
+    },
     async GET(req: Request, ctx: FreshContext) {
         const { data, error } = await supabase
             .from("posts")

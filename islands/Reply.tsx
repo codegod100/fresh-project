@@ -1,19 +1,17 @@
 import { useSignal } from "@preact/signals";
-import { SupabaseClient } from "npm:@supabase/supabase-js";
-import { Signal } from "@preact/signals";
 interface ReplyProps {
-    client: Signal<SupabaseClient>;
     post_id: number;
     parent_comment_id?: number;
 }
 export default function (props: ReplyProps) {
-    const client = props.client.value;
-    async function submitComment() {
+    async function submitComment(event) {
+        event.preventDefault();
+        console.log("submit clicked");
         const comment = document.getElementById(
             "comment",
         ) as HTMLTextAreaElement;
         if (!comment) throw "fatal";
-        setTimeout(() => comment.focus(), 100);
+        // setTimeout(() => comment.focus(), 100);
         // comment.focus();
         const body = comment.value;
         const user = await client.auth.getUser();
@@ -57,11 +55,24 @@ export default function (props: ReplyProps) {
             </div>
             <div>
                 {clicked.value && (
-                    <div>
-                        <textarea id="comment" class="border w-full h-28">
-                        </textarea>
-                        <button onClick={submitComment}>Submit</button>
-                    </div>
+                    <form method="POST">
+                        <div>
+                            <textarea
+                                name="comment"
+                                id="comment"
+                                class="border w-full h-28"
+                            >
+                            </textarea>
+                        </div>
+                        <input
+                            type="hidden"
+                            name="parent_id"
+                            value={props.parent_comment_id}
+                        />
+                        <div class="mt-2">
+                            <button type="submit">Submit</button>
+                        </div>
+                    </form>
                 )}
             </div>
         </div>

@@ -37,38 +37,38 @@ export default function (props: SigninProps) {
     // console.log({ supabase });
     globalThis.addEventListener("load", () => handler(supabase));
 
-    // supabase.auth.onAuthStateChange(async (event, session) => {
-    //     if (session && session.provider_token) {
-    //         window.localStorage.setItem(
-    //             "oauth_provider_token",
-    //             session.provider_token,
-    //         );
-    //     }
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session && session.provider_token) {
+            window.localStorage.setItem(
+                "oauth_provider_token",
+                session.provider_token,
+            );
+        }
 
-    //     if (session && session.provider_refresh_token) {
-    //         window.localStorage.setItem(
-    //             "oauth_provider_refresh_token",
-    //             session.provider_refresh_token,
-    //         );
-    //     }
+        if (session && session.provider_refresh_token) {
+            window.localStorage.setItem(
+                "oauth_provider_refresh_token",
+                session.provider_refresh_token,
+            );
+        }
 
-    //     if (session && session.access_token) {
-    //         // await fetch("/token", {
-    //         //     method: "POST",
-    //         //     body: JSON.stringify({ token: session.access_token }),
-    //         // });
+        if (session && session.access_token) {
+            // await fetch("/token", {
+            //     method: "POST",
+            //     body: JSON.stringify({ token: session.access_token }),
+            // });
 
-    //         window.localStorage.setItem(
-    //             "access_token",
-    //             session.access_token,
-    //         );
-    //     }
+            window.localStorage.setItem(
+                "access_token",
+                session.access_token,
+            );
+        }
 
-    //     if (event === "SIGNED_OUT") {
-    //         window.localStorage.removeItem("oauth_provider_token");
-    //         window.localStorage.removeItem("oauth_provider_refresh_token");
-    //     }
-    // });
+        if (event === "SIGNED_OUT") {
+            window.localStorage.removeItem("oauth_provider_token");
+            window.localStorage.removeItem("oauth_provider_refresh_token");
+        }
+    });
     console.log({ redirect_url });
 
     return (
