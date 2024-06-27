@@ -30,7 +30,13 @@ export default async function (req, { Component, state }: PageProps) {
             {/* <Server client={state.ssrclient} /> */}
             <div class="flex flex-row">
                 <Search client={signal} />
-                <div class="grow text-right">Hello {username}</div>
+                {username && <div class="grow text-right">Hello {username}
+                </div>}
+                {!username && (
+                    <div class="grow text-right">
+                        <a href="/login">Login</a>
+                    </div>
+                )}
             </div>
             <div>
             </div>
