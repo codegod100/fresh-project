@@ -18,6 +18,7 @@ import * as $search from "./routes/search.tsx";
 import * as $user_posts_name_ from "./routes/user/posts/[name].tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $CreatePost from "./islands/CreatePost.tsx";
+import * as $Redirect from "./islands/Redirect.tsx";
 import * as $Reply from "./islands/Reply.tsx";
 import * as $Search from "./islands/Search.tsx";
 import * as $Server from "./islands/Server.tsx";
@@ -47,6 +48,7 @@ const manifest = {
   islands: {
     "./islands/Counter.tsx": $Counter,
     "./islands/CreatePost.tsx": $CreatePost,
+    "./islands/Redirect.tsx": $Redirect,
     "./islands/Reply.tsx": $Reply,
     "./islands/Search.tsx": $Search,
     "./islands/Server.tsx": $Server,

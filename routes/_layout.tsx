@@ -23,14 +23,14 @@ export default async function (req, { Component, state }: PageProps) {
         data.user?.id,
     ).single();
     console.log({ userRecord });
-    const username = userRecord.data.username;
+    const username = userRecord.data?.username;
     return (
         <div class="layout">
             <SupaClient supaCreds={creds} signal={signal} />
             {/* <Server client={state.ssrclient} /> */}
             <div class="flex flex-row">
                 <Search client={signal} />
-                <div class="grow text-right">{username}</div>
+                <div class="grow text-right">Hello {username}</div>
             </div>
             <div>
             </div>

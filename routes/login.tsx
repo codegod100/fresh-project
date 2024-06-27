@@ -8,7 +8,8 @@ import {
     RouteContext,
 } from "$fresh/src/server/types.ts";
 import { createServerClient } from "npm:@supabase/ssr";
-import { serverClient } from "./lib.ts";
+import Redirect from "../islands/Redirect.tsx";
+const kv = await Deno.openKv();
 
 interface Cookie {
     name: string;
@@ -18,79 +19,81 @@ interface Cookie {
 const redirect_url = Deno.env.get("REDIRECT_URL") as string;
 export const handler = {
     async GET(req, ctx: FreshContext) {
+        let redirect = "";
         const { searchParams, origin } = new URL(req.url);
         const code = searchParams.get("code");
-        const resp = await ctx.render();
+
         const supabase_url = Deno.env.get("SUPABASE_URL") as string;
         const anon_key = Deno.env.get("ANON_KEY") as string;
         const cookies = getCookies(req.headers);
-        // console.log({ cookies });
         const allCookies: Cookie[] = [];
         for (const cookie in cookies) {
             allCookies.push({ name: cookie, value: cookies[cookie] });
         }
         function getAllCookies(): Promise<Cookie[]> {
             return new Promise((resolve) => {
-                // console.log({ allCookies });
                 resolve(allCookies);
             });
         }
-
-        if (code) {
-            const serverClient = createServerClient(supabase_url, anon_key, {
-                cookies: {
-                    getAll: getAllCookies,
-                    setAll: (cookies) => {
-                        console.log({ cookies });
-                        cookies.forEach((cookie) => {
-                            setCookie(resp.headers, cookie);
-                        });
-                    },
+        const cookiesToSet: Cookie[] = [];
+        const serverClient = createServerClient(supabase_url, anon_key, {
+            cookies: {
+                getAll: getAllCookies,
+                setAll: (cookies) => {
+                    console.log({ cookies });
+                    cookies.forEach((cookie) => {
+                        cookiesToSet.push(cookie);
+                    });
                 },
-            });
+            },
+        });
+        if (code) {
             const { data, error } = await serverClient.auth
                 .exchangeCodeForSession(code);
             console.log({ data, error });
             // console.log(await serverClient.auth.getUser());
-            const headers = new Headers();
-            headers.set("location", "/login");
-            // return new Response(null, { status: 303, headers });
         } else {
             // const { data, error } = await serverClient.auth.getUser();
             // console.log({ data, error });
-            // const val = await serverClient.auth.signInWithOAuth({
-            //     provider: "discord",
-            //     options: { redirectTo: redirect_url },
-            // });
-            // console.log(val.data.url);
-            const { data, error } = await serverClient(cookies).auth.getUser();
-            console.log({ data, error });
+            const val = await serverClient.auth.signInWithOAuth({
+                provider: "discord",
+                options: { redirectTo: redirect_url },
+            });
+            redirect = val.data.url;
+            console.log(val.data.url);
         }
-
+        const resp = await ctx.render({ redirect });
+        cookiesToSet.forEach((cookie) => setCookie(resp.headers, cookie));
+        console.log(resp.headers);
         return resp;
     },
 };
 
 export default defineRoute(async (req, ctx) => {
-    const client = ctx.state.signal;
+    console.log({ ctx: ctx.data });
 
-    const url = new URL(req.url);
     const { searchParams, origin } = new URL(req.url);
     const code = searchParams.get("code");
     // if "next" is in param, use it as the redirect URL
-    const next = searchParams.get("next") ?? "/";
     // const cookies = getCookies(req.headers);
 
-    // await serverClient.auth.signOut();
-    // console.log({ resp });
-    // console.log(await serverClient.from("users").select());
-    // console.log({ code, next, cookies, url, origin });
-    // console.log({ headers: req.headers });
+    if (code) {
+        const headers = new Headers();
+        headers.set("location", "/login");
+        // return new Response(null, { status: 303, headers });
+    }
+
     return (
         <div>
-            <Signin
-                redirect_url={redirect_url}
-            />
+            {code && <Redirect />}
+            {!code && (
+                <div>
+                    <div>What</div>
+                    <div>
+                        <a href={ctx.data.redirect}>{ctx.data.redirect}</a>
+                    </div>
+                </div>
+            )}
         </div>
     );
 });
