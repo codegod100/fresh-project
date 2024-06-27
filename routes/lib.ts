@@ -5,6 +5,10 @@ import { Database } from "../types/supabase.ts";
 
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 
+import { createServerClient } from "npm:@supabase/ssr";
+
+import { getCookies, setCookie } from "jsr:@std/http/cookie";
+
 const supabase_url = Deno.env.get("SUPABASE_URL") as string;
 const anon_key = Deno.env.get("ANON_KEY") as string;
 export const supabase = createClient<Database>(
@@ -92,5 +96,32 @@ export function saveUser(user: User): Effect.Effect<User, Error> {
     return Effect.tryPromise(async () => {
         await kv.set(["users", user.username], user);
         return user;
+    });
+}
+
+interface Cookie {
+    name: string;
+    value: string;
+}
+export function serverClient(cookies) {
+    const supabase_url = Deno.env.get("SUPABASE_URL") as string;
+    const anon_key = Deno.env.get("ANON_KEY") as string;
+    // console.log({ cookies });
+    const allCookies: Cookie[] = [];
+    for (const cookie in cookies) {
+        allCookies.push({ name: cookie, value: cookies[cookie] });
+    }
+    function getAllCookies(): Promise<Cookie[]> {
+        return new Promise((resolve) => {
+            // console.log({ allCookies });
+            resolve(allCookies);
+        });
+    }
+    return createServerClient(supabase_url, anon_key, {
+        cookies: {
+            getAll: getAllCookies,
+            setAll: (cookies) => {
+            },
+        },
     });
 }

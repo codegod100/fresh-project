@@ -11,16 +11,34 @@ export default function (props) {
         const term = document.getElementById("search").value;
         console.log({ term });
         const { client } = props;
-        const { data, error } = await client.value.from("posts")
-            .select()
-            .textSearch(
-                "body",
-                term,
-            );
-        console.log(data, error);
-        const r = data.map((post) => (
+        let results = [];
+        await (async () => {
+            const { data, error } = await client.value.from("posts")
+                .select()
+                .textSearch("body", term);
+            console.log(data, error);
+
+            results = results.concat(data);
+        })();
+        await (async () => {
+            const { data, error } = await client.value.from("comments")
+                .select("body, posts(id,title)")
+                .textSearch("body", term);
+            const merged = data.map((comment) => ({
+                id: comment.posts.id,
+                title: comment.posts.title,
+                body: comment.body,
+            }));
+            console.log(data, error);
+            console.log({ merged });
+            results = results.concat(merged);
+        })();
+        console.log({ results });
+        const r = results.map((post) => (
             <div>
-                <div>Title:{post.title}</div>
+                <div>
+                    <a href={`/posts/${post.id}`}>Title:{post.title}</a>
+                </div>
                 <div>Body: {post.body}</div>
             </div>
         ));
@@ -33,6 +51,7 @@ export default function (props) {
         <div>
             <form onSubmit={search}>
                 <input
+                    class="border"
                     type="search"
                     id="search"
                     incremental

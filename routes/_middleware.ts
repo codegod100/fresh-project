@@ -1,8 +1,10 @@
 import { FreshContext } from "$fresh/server.ts";
-import { getCookies } from "jsr:@std/http/cookie";
+import { getCookies, setCookie } from "jsr:@std/http/cookie";
 import { supabase, User, userBySession } from "./lib.ts";
 import { Effect } from "npm:effect";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
+import { createServerClient } from "npm:@supabase/ssr";
+
 import { Signal, signal, useSignal } from "@preact/signals";
 
 export interface State {
@@ -15,15 +17,43 @@ export interface State {
     signal: Signal;
 }
 
-export async function handler(_req, ctx) {
+interface Cookie {
+    name: string;
+    value: string;
+}
+
+export async function handler(req, ctx: FreshContext) {
+    const url = new URL(req.url);
+    if (url.pathname === "/login") {
+        // console.log({ url });
+    }
     const supabase_url = Deno.env.get("SUPABASE_URL") as string;
     const anon_key = Deno.env.get("ANON_KEY") as string;
+    const cookies = getCookies(req.headers);
+    // console.log({ cookies });
+    const allCookies: Cookie[] = [];
+    for (const cookie in cookies) {
+        allCookies.push({ name: cookie, value: cookies[cookie] });
+    }
+    function getAllCookies(): Promise<Cookie[]> {
+        return new Promise((resolve) => {
+            resolve(allCookies);
+        });
+    }
+    // console.log({ allCookies });
     ctx.state.supaCreds = [supabase_url, anon_key];
     let empty: SupabaseClient;
     const s = signal<SupabaseClient>(empty);
     ctx.state.signal = s;
     ctx.state.client = createClient(supabase_url, anon_key);
-    return ctx.next();
+    const resp = await ctx.next();
+    if (url.pathname === "/login") {
+        // console.log(ctx.state);
+    }
+    // const user = await ctx.state.ssrclient.auth.getUser();
+    // console.log({ user });
+    // return next;
+    return resp;
 }
 // export async function handler(req: Request, ctx: FreshContext<State>) {
 //     const program = Effect.gen(function* () {
