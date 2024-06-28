@@ -15,6 +15,7 @@ import * as $lib from "./routes/lib.ts";
 import * as $login from "./routes/login.tsx";
 import * as $posts_id_ from "./routes/posts/[id].tsx";
 import * as $search from "./routes/search.tsx";
+import * as $signout from "./routes/signout.tsx";
 import * as $user_posts_name_ from "./routes/user/posts/[name].tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $CreatePost from "./islands/CreatePost.tsx";
@@ -43,6 +44,7 @@ const manifest = {
     "./routes/login.tsx": $login,
     "./routes/posts/[id].tsx": $posts_id_,
     "./routes/search.tsx": $search,
+    "./routes/signout.tsx": $signout,
     "./routes/user/posts/[name].tsx": $user_posts_name_,
   },
   islands: {

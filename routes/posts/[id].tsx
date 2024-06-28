@@ -24,6 +24,7 @@ interface Comment {
 }
 
 interface Data {
+    user: User;
     post: Post;
     comments: Comment[];
     signal: Signal;
@@ -41,29 +42,31 @@ export default function ({ data }: PageProps<Data>) {
             <div>Body: {post.body}</div>
             <div>User: {post.username}</div>
             <div>
-                <Reply post_id={post.id} />
+                {data.user && <Reply post_id={post.id} />}
             </div>
 
             <div>
                 <div class="mt-5 mb-1">Comments:</div>
-                {comments.map((comment) => fillElements(comment, signal))}
+                {comments.map((comment) => fillElements(comment, data.user))}
             </div>
         </div>
     );
 }
 
-function fillElements(comment: Comment, signal) {
+function fillElements(comment: Comment, user: User) {
     return (
         <div class="pl-2 border-dotted border border-black">
             {comment.username}: {comment.body}
             <div class="mb-2">
-                <Reply
-                    post_id={comment.post_id}
-                    parent_comment_id={comment.id}
-                />
+                {user && (
+                    <Reply
+                        post_id={comment.post_id}
+                        parent_comment_id={comment.id}
+                    />
+                )}
             </div>
             {comment.children?.map((comment) => (
-                fillElements(comment, signal)
+                fillElements(comment, user)
             ))}
         </div>
     );
@@ -79,9 +82,8 @@ export const handler = {
         const form = await req.formData();
         const comment = form.get("comment");
         const parent_id = form.get("parent_id");
-        const cookies = getCookies(req.headers);
 
-        const client = serverClient(cookies);
+        const client = serverClient(req);
         let { data, error } = await client.auth.getUser();
         if (error) {
             throw error;
@@ -94,13 +96,16 @@ export const handler = {
         if (error2) {
             throw error2;
         }
+        const record = {
+            body: comment,
+            user_id: user.id,
+            post_id: ctx.params.id,
+        };
+        if (parent_id) {
+            record["parent_comment_id"] = parent_id;
+        }
         const result = await client
-            .from("comments").insert({
-                body: comment,
-                user_id: user.id,
-                post_id: ctx.params.id,
-                parent_comment_id: parent_id,
-            })
+            .from("comments").insert(record)
             .single();
         console.log({ result });
         // return <script>window.location.href="/"</script>;
@@ -114,7 +119,10 @@ export const handler = {
         });
     },
     async GET(req: Request, ctx: FreshContext) {
-        const { data, error } = await supabase
+        const client = serverClient(req);
+        const { data: userData, error: userError } = await client.auth
+            .getUser();
+        const { data, error } = await client
             .from("posts")
             .select(
                 "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id)",
@@ -144,6 +152,7 @@ export const handler = {
             username: data.users.username,
         };
         return ctx.render({
+            user: userData.user,
             post,
             comments: base_comments,
             signal: ctx.state.signal,

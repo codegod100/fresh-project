@@ -103,7 +103,8 @@ interface Cookie {
     name: string;
     value: string;
 }
-export function serverClient(cookies) {
+export function serverClient(req: Request) {
+    const cookies = getCookies(req.headers);
     const supabase_url = Deno.env.get("SUPABASE_URL") as string;
     const anon_key = Deno.env.get("ANON_KEY") as string;
     // console.log({ cookies });
@@ -123,5 +124,14 @@ export function serverClient(cookies) {
             setAll: (cookies) => {
             },
         },
+    });
+}
+
+export function redirect(path: string) {
+    const headers = new Headers();
+    headers.set("location", path);
+    return new Response(null, {
+        status: 303, // See Other
+        headers,
     });
 }

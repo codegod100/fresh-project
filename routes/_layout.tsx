@@ -10,28 +10,26 @@ import Server from "../islands/Server.tsx";
 import { serverClient } from "./lib.ts";
 import { getCookies } from "jsr:@std/http/cookie";
 
-export default async function (req, { Component, state }: PageProps) {
+export default async function (req: Request, { Component, state }: PageProps) {
     const creds = state.supaCreds;
     const signal = state.signal;
     const client = state.client;
-    const cookies = getCookies(req.headers);
-    const sc = serverClient(cookies);
+    const sc = serverClient(req);
     const { data, error } = await sc.auth.getUser();
-    console.log({ data, error });
     const userRecord = await sc.from("users").select().eq(
         "user_id",
         data.user?.id,
     ).single();
-    console.log({ userRecord });
     const username = userRecord.data?.username;
     return (
         <div class="layout">
-            <SupaClient supaCreds={creds} signal={signal} />
-            {/* <Server client={state.ssrclient} /> */}
             <div class="flex flex-row">
                 <Search client={signal} />
-                {username && <div class="grow text-right">Hello {username}
-                </div>}
+                {username && (
+                    <div class="grow text-right">
+                        Hello {username} [<a href="/signout">Signout</a>]
+                    </div>
+                )}
                 {!username && (
                     <div class="grow text-right">
                         <a href="/login">Login</a>
@@ -40,7 +38,7 @@ export default async function (req, { Component, state }: PageProps) {
             </div>
             <div>
             </div>
-            <div class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+            <div class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
                 <a href="/">{Deno.env.get("SITE_NAME")}</a>
             </div>
             <Component />

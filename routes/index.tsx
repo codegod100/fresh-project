@@ -31,7 +31,7 @@ export default async function Home(props: PageProps) {
   return (
     <div>
       <div>
-        <h2 class="text-2xl font-extrabold dark:text-white mb-3">
+        <h2 class="text-2xl font-extrabold  mb-3">
           Recent Posts
         </h2>
         <div class="pl-2">

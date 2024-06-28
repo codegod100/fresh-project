@@ -9,6 +9,7 @@ import {
 } from "$fresh/src/server/types.ts";
 import { createServerClient } from "npm:@supabase/ssr";
 import Redirect from "../islands/Redirect.tsx";
+import { redirect } from "./lib.ts";
 const kv = await Deno.openKv();
 
 interface Cookie {
@@ -83,17 +84,11 @@ export default defineRoute(async (req, ctx) => {
         // return new Response(null, { status: 303, headers });
     }
 
+    // return redirect(ctx.data.redirect);
     return (
         <div>
-            {code && <Redirect />}
-            {!code && (
-                <div>
-                    <div>What</div>
-                    <div>
-                        <a href={ctx.data.redirect}>{ctx.data.redirect}</a>
-                    </div>
-                </div>
-            )}
+            {code && <Redirect path="/" />}
+            {!code && <Redirect path={ctx.data.redirect} />}
         </div>
     );
 });
