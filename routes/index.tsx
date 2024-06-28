@@ -15,7 +15,8 @@ export default async function Home(props: PageProps) {
   );
   const { data, error } = await supabase
     .from("posts")
-    .select("title, body, category, id, users ( id,username )");
+    .select("title, body, category, id, users ( id,username )")
+    .order("created_at", { ascending: false });
 
   const posts = data?.map((post) => (
     <div class="mb-2">
@@ -31,6 +32,9 @@ export default async function Home(props: PageProps) {
   return (
     <div>
       <div>
+        <div class="text-2xl font-extrabold  mb-3">
+          <a href="/create/post">Create new post</a>
+        </div>
         <h2 class="text-2xl font-extrabold  mb-3">
           Recent Posts
         </h2>
