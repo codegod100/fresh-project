@@ -15,12 +15,14 @@ export const handler = {
         if (!term) {
             throw "no search term";
         }
+        const query = term.split(" ").map((w) => `'${w}'`).join(" & ");
         const client = serverClient(req);
         let results: { id: number; title: string; body: string }[] = [];
         const { data: postsData, error: postsError } = await client
             .from("posts")
             .select()
-            .textSearch("body", term);
+            .textSearch("body", query);
+
         if (!postsData) {
             throw postsError;
         }
@@ -31,10 +33,26 @@ export const handler = {
         }));
         results = results.concat(posts);
 
+        const { data: postsData2, error: postsError2 } = await client
+            .from("posts")
+            .select()
+            .textSearch("title", query);
+
+        if (!postsData2) {
+            throw postsError2;
+        }
+        const posts2 = postsData2.map((post) => ({
+            id: post.id as number,
+            title: post.title as string,
+            body: post.body as string,
+        }));
+
+        results = results.concat(posts2);
+
         const { data: commentsData, error: commentsError } = await client
             .from("comments")
             .select("body, posts(id,title)")
-            .textSearch("body", term);
+            .textSearch("body", query);
         if (!commentsData) {
             throw commentsError;
         }
