@@ -52,7 +52,21 @@ export const handler = {
             const { data, error } = await serverClient.auth
                 .exchangeCodeForSession(code);
             console.log({ data, error });
-            // console.log(await serverClient.auth.getUser());
+            const { data: userData, error: userError } = await serverClient
+                .from("users")
+                .select()
+                .eq("user_id", data.user.id)
+                .single();
+            if (!userData) {
+                const { data: userData, error: userError } = await serverClient
+                    .from("users")
+                    .insert({
+                        user_id: data.user?.id,
+                        username: data.user?.user_metadata.custom_claims
+                            .global_name,
+                    });
+                console.log({ userData, userError });
+            }
         } else {
             // const { data, error } = await serverClient.auth.getUser();
             // console.log({ data, error });
@@ -71,18 +85,10 @@ export const handler = {
 };
 
 export default defineRoute(async (req, ctx) => {
-    console.log({ ctx: ctx.data });
-
     const { searchParams, origin } = new URL(req.url);
     const code = searchParams.get("code");
     // if "next" is in param, use it as the redirect URL
     // const cookies = getCookies(req.headers);
-
-    if (code) {
-        const headers = new Headers();
-        headers.set("location", "/login");
-        // return new Response(null, { status: 303, headers });
-    }
 
     // return redirect(ctx.data.redirect);
     return (

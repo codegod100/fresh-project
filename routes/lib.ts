@@ -118,7 +118,7 @@ export function serverClient(req: Request) {
             resolve(allCookies);
         });
     }
-    return createServerClient(supabase_url, anon_key, {
+    return createServerClient<Database>(supabase_url, anon_key, {
         cookies: {
             getAll: getAllCookies,
             setAll: (cookies) => {
