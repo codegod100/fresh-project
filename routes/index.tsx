@@ -1,72 +1,17 @@
-import { FreshContext, PageProps } from "$fresh/server.ts";
-import { createSession, getUser, saveUser, supabase, User } from "./lib.ts";
-import { Effect } from "npm:effect";
-import { Cookie, getCookies, setCookie } from "jsr:@std/http/cookie";
+import { defineRoute } from "$fresh/server.ts";
+import { serverClient } from "./lib.ts";
 
-export default async function Home(props: PageProps) {
-  const user = props.state?.user as User;
-  const login = (
+export default defineRoute(async (req, ctx) => {
+  const client = serverClient(req);
+  const { data: communities, error } = await client
+    .from("communities")
+    .select();
+  const render = communities.map((community) => (
     <div>
-      <form method="POST">
-        <input name="username"></input>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  );
-  const { data, error } = await supabase
-    .from("posts")
-    .select("title, body, category, id, users ( id,username )")
-    .order("created_at", { ascending: false });
-
-  const posts = data?.map((post) => (
-    <div class="mb-2">
-      <div>
-        Title: <a href={`/posts/${post.id}`}>{post.title}</a>{" "}
-        {post.category && <span>[{post.category}]</span>}
-      </div>
-      <div>
-        Author: {post.users?.username}
-      </div>
+      <a href={`/communities/${community.id}`}>
+        {community.id} {community.name}
+      </a>
     </div>
   ));
-  return (
-    <div>
-      <div>
-        <div class="text-2xl font-extrabold  mb-3">
-          <a href="/create/post">Create new post</a>
-        </div>
-        <h2 class="text-2xl font-extrabold  mb-3">
-          Recent Posts
-        </h2>
-        <div class="pl-2">
-          {posts}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export const handler = {
-  async GET(req, ctx) {
-    return ctx.render();
-  },
-  async POST(req: Request, ctx: FreshContext) {
-    const form = await req.formData();
-    const username = form.get("username") as string;
-    console.log({ username });
-    const resp = await ctx.render();
-    const program = Effect.gen(function* () {
-      let user = yield* getUser(username);
-      console.log({ gotuser: user });
-      if (!user) {
-        user = yield* saveUser({ username } as User);
-        console.log({ newuser: user });
-      }
-      const session = yield* createSession(user);
-      const cookie: Cookie = { name: "session_id", value: session.id };
-      setCookie(resp.headers, cookie);
-    });
-    await Effect.runPromise(program);
-    return resp;
-  },
-};
+  return <div>{render}</div>;
+});

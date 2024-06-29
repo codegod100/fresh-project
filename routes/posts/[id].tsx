@@ -42,6 +42,11 @@ export default function ({ data }: PageProps<Data>) {
             <div>Body: {post.body}</div>
             <div>User: {post.username}</div>
             <div>
+                <a href={`/communities/${post.community_id}`}>
+                    Community: {post.community}
+                </a>
+            </div>
+            <div>
                 {data.user && <Reply post_id={post.id} />}
             </div>
 
@@ -125,7 +130,7 @@ export const handler = {
         const { data, error } = await client
             .from("posts")
             .select(
-                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id)",
+                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id), communities(id,name)",
             )
             .order("created_at", {
                 referencedTable: "comments",
@@ -150,6 +155,8 @@ export const handler = {
             category: data.category,
             body: data.body,
             username: data.users.username,
+            community: data.communities.name,
+            community_id: data.communities.id,
         };
         return ctx.render({
             user: userData.user,

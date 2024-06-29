@@ -51,10 +51,65 @@ export type Database = {
           },
         ]
       }
+      communities: {
+        Row: {
+          created_at: string
+          id: number
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string | null
+        }
+        Relationships: []
+      }
+      moderators: {
+        Row: {
+          community_id: number | null
+          created_at: string
+          id: number
+          user_id: number | null
+        }
+        Insert: {
+          community_id?: number | null
+          created_at?: string
+          id?: number
+          user_id?: number | null
+        }
+        Update: {
+          community_id?: number | null
+          created_at?: string
+          id?: number
+          user_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderators_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moderators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           body: string | null
           category: string | null
+          community_id: number | null
           created_at: string
           id: number
           title: string | null
@@ -63,6 +118,7 @@ export type Database = {
         Insert: {
           body?: string | null
           category?: string | null
+          community_id?: number | null
           created_at?: string
           id?: number
           title?: string | null
@@ -71,12 +127,20 @@ export type Database = {
         Update: {
           body?: string | null
           category?: string | null
+          community_id?: number | null
           created_at?: string
           id?: number
           title?: string | null
           user_id?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "posts_user_id_fkey"
             columns: ["user_id"]
