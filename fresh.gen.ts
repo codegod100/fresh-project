@@ -8,13 +8,13 @@ import * as $_layout from "./routes/_layout.tsx";
 import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_token from "./routes/api/token.ts";
-import * as $communities_id_ from "./routes/communities/[id].tsx";
+import * as $communities_name_ from "./routes/communities/[name].tsx";
+import * as $communities_name_id_ from "./routes/communities/[name]/[id].tsx";
 import * as $create_post from "./routes/create/post.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
 import * as $login from "./routes/login.tsx";
-import * as $posts_id_ from "./routes/posts/[id].tsx";
 import * as $search from "./routes/search.tsx";
 import * as $signout from "./routes/signout.tsx";
 import * as $user_posts_name_ from "./routes/user/posts/[name].tsx";
@@ -37,13 +37,13 @@ const manifest = {
     "./routes/_middleware.ts": $_middleware,
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/token.ts": $api_token,
-    "./routes/communities/[id].tsx": $communities_id_,
+    "./routes/communities/[name].tsx": $communities_name_,
+    "./routes/communities/[name]/[id].tsx": $communities_name_id_,
     "./routes/create/post.tsx": $create_post,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
     "./routes/login.tsx": $login,
-    "./routes/posts/[id].tsx": $posts_id_,
     "./routes/search.tsx": $search,
     "./routes/signout.tsx": $signout,
     "./routes/user/posts/[name].tsx": $user_posts_name_,

@@ -4,11 +4,11 @@ import {
     PageProps,
     RouteContext,
 } from "$fresh/server.ts";
-import Reply from "../../islands/Reply.tsx";
-import { serverClient, supabase } from "../lib.ts";
+import Reply from "../../../islands/Reply.tsx";
+import { serverClient, supabase } from "../../lib.ts";
 import { Signal, useSignal } from "@preact/signals";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
-import { Tables } from "../../types/supabase.ts";
+import { Tables } from "../../../types/supabase.ts";
 import { getCookies } from "jsr:@std/http/cookie";
 
 interface Post {
@@ -42,7 +42,7 @@ export default function ({ data }: PageProps<Data>) {
             <div>Body: {post.body}</div>
             <div>User: {post.username}</div>
             <div>
-                <a href={`/communities/${post.community_id}`}>
+                <a href={`/communities/${post.community}`}>
                     Community: {post.community}
                 </a>
             </div>

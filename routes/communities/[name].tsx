@@ -14,19 +14,22 @@ export default defineRoute(async (req, ctx) => {
     const client = serverClient(req);
     const { data: posts, error } = await client
         .from("posts")
-        .select("title, id, users(username)")
+        .select("title, id, users(username), communities(name)")
         .order("created_at", { ascending: false })
-        .eq("community_id", ctx.params.id);
+        .eq("communities.name", ctx.params.name);
     console.log({ error });
     const { data: community, error: communityError } = await client
         .from("communities")
         .select()
-        .eq("id", ctx.params.id)
+        .eq("name", ctx.params.name)
         .single();
     const postsJSX = posts?.map((post) => (
         <div class="mb-2">
             <div>
-                Title: <a href={`/posts/${post.id}`}>{post.title}</a>{" "}
+                Title:{" "}
+                <a href={`/communities/${community.name}/${post.id}`}>
+                    {post.title}
+                </a>{" "}
                 {post.category && <span>[{post.category}]</span>}
             </div>
             <div>
