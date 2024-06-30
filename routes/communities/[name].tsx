@@ -4,26 +4,25 @@ import {
     getUser,
     saveUser,
     serverClient,
-    supabase,
     User,
 } from "../lib.ts";
 import { Effect } from "npm:effect";
-import { Cookie, getCookies, setCookie } from "jsr:@std/http/cookie";
+import { Cookie, setCookie } from "jsr:@std/http/cookie";
 
 export default defineRoute(async (req, ctx) => {
     const client = serverClient(req);
-    const { data: posts, error } = await client
-        .from("posts")
-        .select("title, id, users(username), communities(name)")
-        .order("created_at", { ascending: false })
-        .eq("communities.name", ctx.params.name);
-    console.log({ error });
+    // const { data: posts, error } = await client
+    //     .from("posts")
+    //     .select("title, id, category, communities(id,name), users(username)")
+    //     .eq("communities.name", ctx.params.name)
+    //     .order("created_at", { ascending: false });
+    // console.log({ posts, error, name: ctx.params.name });
     const { data: community, error: communityError } = await client
         .from("communities")
-        .select()
+        .select("name, posts(id, title, category, users(username))")
         .eq("name", ctx.params.name)
         .single();
-    const postsJSX = posts?.map((post) => (
+    const postsJSX = community?.posts?.map((post) => (
         <div class="mb-2">
             <div>
                 Title:{" "}
@@ -40,7 +39,7 @@ export default defineRoute(async (req, ctx) => {
     return (
         <div>
             <div>
-                <div>Community: {community.name}</div>
+                <div>Community: {community?.name}</div>
             </div>
             <div>
                 <div class="text-2xl font-extrabold  mb-3">

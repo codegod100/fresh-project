@@ -10,6 +10,7 @@ import { Signal, useSignal } from "@preact/signals";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import { Tables } from "../../../types/supabase.ts";
 import { getCookies } from "jsr:@std/http/cookie";
+import community from "../../create/community.tsx";
 
 interface Post {
     username: string;
@@ -106,6 +107,11 @@ export const handler = {
             user_id: user.id,
             post_id: ctx.params.id,
         };
+        const { data: post, error: postError } = await client
+            .from("posts")
+            .select("communities(id,name)")
+            .eq("id", ctx.params.id)
+            .single();
         if (parent_id) {
             record["parent_comment_id"] = parent_id;
         }
@@ -117,7 +123,10 @@ export const handler = {
         // return <div>Whatttt</div>;
         // return await ctx.render();
         const headers = new Headers();
-        headers.set("location", `/posts/${ctx.params.id}`);
+        headers.set(
+            "location",
+            `/communities/${post.communities.name}/${ctx.params.id}`,
+        );
         return new Response(null, {
             status: 303, // See Other
             headers,

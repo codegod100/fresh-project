@@ -23,13 +23,16 @@ export default defineRoute(async (req, ctx) => {
   ));
   const render = communities.map((community) => (
     <div>
-      <div>Recent Posts</div>
-      <div>{postRender}</div>
-      <div>Communities</div>
       <a href={`/communities/${community.name}`}>
-        {community.name}
+        Community: {community.name}
       </a>
     </div>
   ));
-  return <div>{render}</div>;
+  return (
+    <div>
+      <div>Recent Posts</div>
+      <div>{postRender}</div>
+      <div>{render}</div>
+    </div>
+  );
 });

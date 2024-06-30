@@ -10,6 +10,7 @@ import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_token from "./routes/api/token.ts";
 import * as $communities_name_ from "./routes/communities/[name].tsx";
 import * as $communities_name_id_ from "./routes/communities/[name]/[id].tsx";
+import * as $create_community from "./routes/create/community.tsx";
 import * as $create_post from "./routes/create/post.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
@@ -39,6 +40,7 @@ const manifest = {
     "./routes/api/token.ts": $api_token,
     "./routes/communities/[name].tsx": $communities_name_,
     "./routes/communities/[name]/[id].tsx": $communities_name_id_,
+    "./routes/create/community.tsx": $create_community,
     "./routes/create/post.tsx": $create_post,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
