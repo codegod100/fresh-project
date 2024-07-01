@@ -5,7 +5,7 @@ export default defineRoute(async (req, ctx) => {
   const client = serverClient(req);
   const { data: posts, error: postsError } = await client
     .from("posts")
-    .select("id, title, users(username), communities(name)")
+    .select("id, title, body, users(username), communities(name)")
     .order("created_at", { ascending: true })
     .limit(5);
   const { data: communities, error } = await client
@@ -18,6 +18,7 @@ export default defineRoute(async (req, ctx) => {
           Title: {post.title}
         </a>
       </div>
+      <div>Body: {post.body}</div>
       <div>Author: {post.users!.username}</div>
     </div>
   ));
