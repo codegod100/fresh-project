@@ -19,7 +19,7 @@ export default defineRoute(async (req, ctx) => {
     // console.log({ posts, error, name: ctx.params.name });
     const { data: community, error: communityError } = await client
         .from("communities")
-        .select("name, posts(id, title, category, users(username))")
+        .select("name, posts(id, title, body, category, users(username))")
         .eq("name", ctx.params.name)
         .single();
     const postsJSX = community?.posts?.map((post) => (
@@ -31,6 +31,7 @@ export default defineRoute(async (req, ctx) => {
                 </a>{" "}
                 {post.category && <span>[{post.category}]</span>}
             </div>
+            <div>Body: {post.body}</div>
             <div>
                 Author: {post.users?.username}
             </div>
