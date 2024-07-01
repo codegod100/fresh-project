@@ -50,11 +50,15 @@ export default function ({ data }: PageProps<Data>) {
             <div>
                 {data.user && <Reply post_id={post.id} />}
             </div>
-
-            <div>
-                <div class="mt-5 mb-1">Comments:</div>
-                {comments.map((comment) => fillElements(comment, data.user))}
-            </div>
+            {comments.length > 0 &&
+                (
+                    <div>
+                        <div class="mt-5 mb-1">Comments:</div>
+                        {comments.map((comment) =>
+                            fillElements(comment, data.user)
+                        )}
+                    </div>
+                )}
         </div>
     );
 }
