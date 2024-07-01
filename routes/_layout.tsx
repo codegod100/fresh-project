@@ -3,16 +3,14 @@ import Search from "../islands/Search.tsx";
 import { serverClient } from "./lib.ts";
 
 export default async function (req: Request, { Component, state }: PageProps) {
-    const creds = state.supaCreds as [string, string];
     const signal = state.signal;
-    const client = state.client;
     const sc = serverClient(req);
     const { data, error } = await sc.auth.getUser();
     const userRecord = await sc.from("users").select().eq(
         "user_id",
-        data.user?.id,
+        data.user!.id,
     ).single();
-    const username = userRecord.data?.username;
+    const username = userRecord.data!.username!;
     return (
         <div class="layout">
             <div class="flex flex-row">
@@ -28,8 +26,6 @@ export default async function (req: Request, { Component, state }: PageProps) {
                     </div>
                 )}
             </div>
-            <div>
-            </div>
             <div class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
                 <a href="/">{Deno.env.get("SITE_NAME")}</a>
             </div>
@@ -37,8 +33,3 @@ export default async function (req: Request, { Component, state }: PageProps) {
         </div>
     );
 }
-
-export const handler = {
-    async GET(req, ctx) {
-    },
-};
