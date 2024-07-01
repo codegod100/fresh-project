@@ -122,6 +122,7 @@ export function serverClient(req: Request) {
         cookies: {
             getAll: getAllCookies,
             setAll: (cookies) => {
+                console.log({ cookies });
             },
         },
     });

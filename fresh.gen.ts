@@ -16,11 +16,13 @@ import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
 import * as $login from "./routes/login.tsx";
+import * as $refresh from "./routes/refresh.ts";
 import * as $search from "./routes/search.tsx";
 import * as $signout from "./routes/signout.tsx";
 import * as $user_posts_name_ from "./routes/user/posts/[name].tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $Redirect from "./islands/Redirect.tsx";
+import * as $Refresh from "./islands/Refresh.tsx";
 import * as $Reply from "./islands/Reply.tsx";
 import * as $Search from "./islands/Search.tsx";
 import * as $Server from "./islands/Server.tsx";
@@ -46,6 +48,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
     "./routes/login.tsx": $login,
+    "./routes/refresh.ts": $refresh,
     "./routes/search.tsx": $search,
     "./routes/signout.tsx": $signout,
     "./routes/user/posts/[name].tsx": $user_posts_name_,
@@ -53,6 +56,7 @@ const manifest = {
   islands: {
     "./islands/Counter.tsx": $Counter,
     "./islands/Redirect.tsx": $Redirect,
+    "./islands/Refresh.tsx": $Refresh,
     "./islands/Reply.tsx": $Reply,
     "./islands/Search.tsx": $Search,
     "./islands/Server.tsx": $Server,

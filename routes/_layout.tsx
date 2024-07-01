@@ -9,9 +9,10 @@ import User from "../islands/User.tsx";
 import Server from "../islands/Server.tsx";
 import { serverClient } from "./lib.ts";
 import { getCookies } from "jsr:@std/http/cookie";
+import Refresh from "../islands/Refresh.tsx";
 
 export default async function (req: Request, { Component, state }: PageProps) {
-    const creds = state.supaCreds;
+    const creds = state.supaCreds as [string, string];
     const signal = state.signal;
     const client = state.client;
     const sc = serverClient(req);
@@ -35,6 +36,7 @@ export default async function (req: Request, { Component, state }: PageProps) {
                         <a href="/login">Login</a>
                     </div>
                 )}
+                <Refresh creds={creds} />
             </div>
             <div>
             </div>
