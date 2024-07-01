@@ -39,10 +39,10 @@ export default defineRoute(async (req, ctx) => {
     return (
         <div>
             <div>
-                <div>Community: {community?.name}</div>
+                <div class="text-3xl mb-2">Community: {community?.name}</div>
             </div>
             <div>
-                <div class="text-2xl font-extrabold  mb-3">
+                <div class="btn text-xl  mb-3">
                     <a href="/create/post">Create new post</a>
                 </div>
                 <h2 class="text-2xl font-extrabold  mb-3">
