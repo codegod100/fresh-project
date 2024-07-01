@@ -16,7 +16,9 @@ export default function (props) {
         console.log({ result });
         sig.value = result.map((entry) => (
             <div>
-                <a href={`/posts/${entry.id}`}>
+                <a
+                    href={`/communities/${entry.community_name}/${entry.id}`}
+                >
                     Title: {entry.title}; Body: {entry.body}
                 </a>
             </div>

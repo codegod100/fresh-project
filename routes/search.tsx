@@ -17,10 +17,15 @@ export const handler = {
         }
         const query = term.split(" ").map((w) => `'${w}'`).join(" & ");
         const client = serverClient(req);
-        let results: { id: number; title: string; body: string }[] = [];
+        let results: {
+            id: number;
+            title: string;
+            body: string;
+            community_name: string;
+        }[] = [];
         const { data: postsData, error: postsError } = await client
             .from("posts")
-            .select()
+            .select("*,communities(name)")
             .textSearch("body", query);
 
         if (!postsData) {
@@ -30,12 +35,13 @@ export const handler = {
             id: post.id as number,
             title: post.title as string,
             body: post.body as string,
+            community_name: post.communities!.name!,
         }));
         results = results.concat(posts);
 
         const { data: postsData2, error: postsError2 } = await client
             .from("posts")
-            .select()
+            .select("*,communities(name)")
             .textSearch("title", query);
 
         if (!postsData2) {
@@ -45,21 +51,23 @@ export const handler = {
             id: post.id as number,
             title: post.title as string,
             body: post.body as string,
+            community_name: post.communities!.name!,
         }));
 
         results = results.concat(posts2);
 
         const { data: commentsData, error: commentsError } = await client
             .from("comments")
-            .select("body, posts(id,title)")
+            .select("body, posts(id,title, communities(name))")
             .textSearch("body", query);
         if (!commentsData) {
             throw commentsError;
         }
         const comments = commentsData.map((comment) => ({
-            id: comment.posts?.id as number,
-            title: comment.posts?.title as string,
-            body: comment.body as string,
+            id: comment.posts!.id,
+            title: comment.posts!.title!,
+            body: comment.body!,
+            community_name: comment.posts!.communities!.name!,
         }));
         results = results.concat(comments);
 
