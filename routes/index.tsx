@@ -29,9 +29,10 @@ export default defineRoute(async (req, ctx) => {
     </div>
   ));
   return (
-    <div>
-      <div>Recent Posts</div>
+    <div class="ml-3">
+      <div class="text-3xl mb-2">Recent Posts</div>
       <div>{postRender}</div>
+      <div class="text-3xl mb-2">Communities</div>
       <div>{render}</div>
     </div>
   );
