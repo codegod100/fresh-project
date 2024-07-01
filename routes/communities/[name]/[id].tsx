@@ -47,8 +47,27 @@ export default function ({ data }: PageProps<Data>) {
                     Community: {post.community}
                 </a>
             </div>
-            <div>
+            {
+                /* <div>
                 {data.user && <Reply post_id={post.id} />}
+            </div> */
+            }
+            <div>
+                <form method="POST">
+                    <div>
+                        <textarea
+                            name="comment"
+                            id="comment"
+                            class="border-2 m-1 w-full h-28"
+                            placeholder="Enter comment..."
+                        >
+                        </textarea>
+                    </div>
+
+                    <div class="mt-2">
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
             </div>
             {comments.length > 0 &&
                 (
