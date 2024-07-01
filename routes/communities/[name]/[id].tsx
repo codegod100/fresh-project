@@ -13,7 +13,14 @@ import { getCookies } from "jsr:@std/http/cookie";
 import community from "../../create/community.tsx";
 
 interface Post {
+    id: number;
     username: string;
+    category: string;
+    title: string;
+    body: string;
+    community: Community;
+}
+interface Community {
 }
 interface Comment {
     id: number;
@@ -47,17 +54,12 @@ export default function ({ data }: PageProps<Data>) {
                     Community: {post.community}
                 </a>
             </div>
-            {
-                /* <div>
-                {data.user && <Reply post_id={post.id} />}
-            </div> */
-            }
+
             <div>
                 <form method="POST">
                     <div>
                         <textarea
                             name="comment"
-                            id="comment"
                             class="border-2 m-1 w-full h-28"
                             placeholder="Enter comment..."
                         >
@@ -148,7 +150,7 @@ export const handler = {
         const headers = new Headers();
         headers.set(
             "location",
-            `/communities/${post.communities.name}/${ctx.params.id}`,
+            `/communities/${post!.communities!.name}/${ctx.params.id}`,
         );
         return new Response(null, {
             status: 303, // See Other
