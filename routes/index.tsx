@@ -14,17 +14,17 @@ export default defineRoute(async (req, ctx) => {
   const postRender = posts?.map((post) => (
     <div class="mb-2">
       <div>
-        <a href={`/communities/${post.communities.name}/${post.id}`}>
+        <a href={`/communities/${post.communities!.name!}/${post.id}`}>
           Title: {post.title}
         </a>
       </div>
-      <div>Author: {post.users.username}</div>
+      <div>Author: {post.users!.username}</div>
     </div>
   ));
-  const render = communities.map((community) => (
+  const render = communities!.map((community) => (
     <div>
-      <a href={`/communities/${community.name}`}>
-        Community: {community.name}
+      <a href={`/communities/${community.name!}`}>
+        Community: {community.name!}
       </a>
     </div>
   ));
