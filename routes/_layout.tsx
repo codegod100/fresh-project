@@ -1,14 +1,6 @@
 import { PageProps } from "$fresh/server.ts";
-import { FreshConfig, FreshContext } from "$fresh/src/server/types.ts";
-import { Signal, useSignal } from "@preact/signals";
-import SupaClient from "../islands/SupaClient.tsx";
-import { State } from "./_middleware.ts";
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import Search from "../islands/Search.tsx";
-import User from "../islands/User.tsx";
-import Server from "../islands/Server.tsx";
 import { serverClient } from "./lib.ts";
-import { getCookies } from "jsr:@std/http/cookie";
 import Refresh from "../islands/Refresh.tsx";
 
 export default async function (req: Request, { Component, state }: PageProps) {
