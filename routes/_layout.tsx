@@ -1,7 +1,6 @@
 import { PageProps } from "$fresh/server.ts";
 import Search from "../islands/Search.tsx";
 import { serverClient } from "./lib.ts";
-import Refresh from "../islands/Refresh.tsx";
 
 export default async function (req: Request, { Component, state }: PageProps) {
     const creds = state.supaCreds as [string, string];
@@ -28,7 +27,6 @@ export default async function (req: Request, { Component, state }: PageProps) {
                         <a href="/login">Login</a>
                     </div>
                 )}
-                <Refresh creds={creds} />
             </div>
             <div>
             </div>
