@@ -6,11 +6,15 @@ export default async function (req: Request, { Component, state }: PageProps) {
     const signal = state.signal;
     const sc = serverClient(req);
     const { data, error } = await sc.auth.getUser();
-    const userRecord = await sc.from("users").select().eq(
-        "user_id",
-        data.user!.id,
-    ).single();
-    const username = userRecord.data!.username!;
+    let username = "";
+    if (!error) {
+        const userRecord = await sc.from("users").select().eq(
+            "user_id",
+            data.user!.id,
+        ).single();
+        username = userRecord.data!.username!;
+    }
+
     return (
         <div class="layout">
             <div class="flex flex-row">
