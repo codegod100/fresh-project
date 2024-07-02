@@ -60,7 +60,7 @@ export default function ({ data }: PageProps<Data>) {
                     <div>
                         <textarea
                             name="comment"
-                            class="border-2 m-1 w-full h-28"
+                            class="border-2 m-1 w-9/12 h-28"
                             placeholder="Enter comment..."
                         >
                         </textarea>
