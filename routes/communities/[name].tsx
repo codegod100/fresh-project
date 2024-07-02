@@ -19,9 +19,15 @@ export default defineRoute(async (req, ctx) => {
     // console.log({ posts, error, name: ctx.params.name });
     const { data: community, error: communityError } = await client
         .from("communities")
-        .select("name, posts(id, title, body, category, users(username))")
+        .select(
+            "name, posts(id, title, created_at, body, category, users(username))",
+        )
         .eq("name", ctx.params.name)
+        .order("created_at", { ascending: false, referencedTable: "posts" })
         .single();
+    if (communityError) {
+        throw communityError;
+    }
     const postsJSX = community?.posts?.map((post) => (
         <div class="mb-2">
             <div>
