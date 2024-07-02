@@ -8,6 +8,7 @@ import {
 } from "../lib.ts";
 import { Effect } from "npm:effect";
 import { Cookie, setCookie } from "jsr:@std/http/cookie";
+import RecentPosts from "../../components/RecentPosts.tsx";
 
 export default defineRoute(async (req, ctx) => {
     const client = serverClient(req);
@@ -20,7 +21,7 @@ export default defineRoute(async (req, ctx) => {
     const { data: community, error: communityError } = await client
         .from("communities")
         .select(
-            "name, posts(id, title, created_at, body, category, users(username))",
+            "name, posts(id, title, created_at, body, category, users(username), communities(name))",
         )
         .eq("name", ctx.params.name)
         .order("created_at", { ascending: false, referencedTable: "posts" })
@@ -58,7 +59,9 @@ export default defineRoute(async (req, ctx) => {
                     Recent Posts
                 </h2>
                 <div class="pl-2">
-                    {postsJSX}
+                    <RecentPosts
+                        posts={community.posts}
+                    />
                 </div>
             </div>
         </div>

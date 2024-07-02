@@ -1,4 +1,5 @@
 import { defineRoute } from "$fresh/server.ts";
+import RecentPosts from "../components/RecentPosts.tsx";
 import { serverClient } from "./lib.ts";
 
 export default defineRoute(async (req, ctx) => {
@@ -11,17 +12,17 @@ export default defineRoute(async (req, ctx) => {
   const { data: communities, error } = await client
     .from("communities")
     .select();
-  const postRender = posts?.map((post) => (
-    <div class="mb-2">
-      <div>
-        <a href={`/communities/${post.communities!.name!}/${post.id}`}>
-          Title: {post.title}
-        </a>
-      </div>
-      <div>Body: {post.body}</div>
-      <div>Author: {post.users!.username}</div>
-    </div>
-  ));
+  // const postRender = posts?.map((post) => (
+  //   <div class="mb-2">
+  //     <div>
+  //       <a href={`/communities/${post.communities!.name!}/${post.id}`}>
+  //         Title: {post.title}
+  //       </a>
+  //     </div>
+  //     <div>Body: {post.body}</div>
+  //     <div>Author: {post.users!.username}</div>
+  //   </div>
+  // ));
   const render = communities!.map((community) => (
     <div>
       <a href={`/communities/${community.name!}`}>
@@ -32,7 +33,9 @@ export default defineRoute(async (req, ctx) => {
   return (
     <div class="ml-3">
       <div class="text-3xl mb-2">Recent Posts</div>
-      <div>{postRender}</div>
+      <div>
+        <RecentPosts posts={posts} />
+      </div>
       <div class="text-3xl mb-2">Communities</div>
       <div>{render}</div>
     </div>
