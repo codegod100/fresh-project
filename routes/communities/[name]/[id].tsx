@@ -44,7 +44,7 @@ export default function ({ data }: PageProps<Data>) {
     return (
         <div class="mb-2">
             <div>
-                Title: <a href={`/posts/${post.id}`}>{post.title}</a>
+                Title: <a href={`/posts/${post.id}`}>{post.title}</a>{" "}
                 {post.category && <span>[{post.category}]</span>}
             </div>
             <div>Body: {post.body}</div>
