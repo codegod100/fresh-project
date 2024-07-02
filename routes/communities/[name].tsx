@@ -44,7 +44,9 @@ export default defineRoute(async (req, ctx) => {
             </div>
             <div>
                 <div class="btn text-xl  mb-3">
-                    <a href="/create/post">Create new post</a>
+                    <a href={`/create/post/${ctx.params.name}`}>
+                        Create new post
+                    </a>
                 </div>
                 <h2 class="text-2xl font-extrabold  mb-3">
                     Recent Posts

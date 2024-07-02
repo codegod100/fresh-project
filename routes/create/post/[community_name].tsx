@@ -1,5 +1,5 @@
 import { defineRoute } from "$fresh/server.ts";
-import { redirect, serverClient } from "../lib.ts";
+import { redirect, serverClient } from "../../lib.ts";
 export default defineRoute(async (req, ctx) => {
     return (
         <div>
@@ -50,21 +50,33 @@ export default defineRoute(async (req, ctx) => {
 export const handler = {
     async POST(req: Request, ctx) {
         const form = await req.formData();
-        const title = form.get("title") as string;
-        const body = form.get("body") as string;
+        const title = form.get("title")!;
+        const body = form.get("body")!;
         const client = serverClient(req);
         const { data: userData, error: userError } = await client.auth
             .getUser();
         const { data: dbUserData, error: dbUserError } = await client
             .from("users")
             .select()
-            .eq("user_id", userData.user?.id as string)
+            .eq("user_id", userData.user!.id)
+            .single();
+        const { data: community } = await client
+            .from("communities")
+            .select()
+            .eq("name", ctx.params.community_name)
             .single();
         const { data: postData, error: postError } = await client
             .from("posts")
-            .insert({ title, body, user_id: dbUserData?.id })
+            .insert({
+                title,
+                body,
+                user_id: dbUserData!.id,
+                community_id: community!.id,
+            })
             .select()
             .single();
-        return redirect(`/posts/${postData.id}`);
+        return redirect(
+            `/communities/${ctx.params.community_name}/${postData!.id}`,
+        );
     },
 };

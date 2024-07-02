@@ -11,7 +11,7 @@ import * as $api_token from "./routes/api/token.ts";
 import * as $communities_name_ from "./routes/communities/[name].tsx";
 import * as $communities_name_id_ from "./routes/communities/[name]/[id].tsx";
 import * as $create_community from "./routes/create/community.tsx";
-import * as $create_post from "./routes/create/post.tsx";
+import * as $create_post_community_name_ from "./routes/create/post/[community_name].tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
@@ -43,7 +43,7 @@ const manifest = {
     "./routes/communities/[name].tsx": $communities_name_,
     "./routes/communities/[name]/[id].tsx": $communities_name_id_,
     "./routes/create/community.tsx": $create_community,
-    "./routes/create/post.tsx": $create_post,
+    "./routes/create/post/[community_name].tsx": $create_post_community_name_,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
