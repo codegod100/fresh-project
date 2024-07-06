@@ -67,7 +67,12 @@ export default function ({ data }: PageProps<Data>) {
                     </div>
 
                     <div class="mt-2">
-                        <button type="submit">Submit</button>
+                        <button
+                            class="btn rounded bg-blue-500 text-white p-1 ml-1"
+                            type="submit"
+                        >
+                            Submit
+                        </button>
                     </div>
                 </form>
             </div>

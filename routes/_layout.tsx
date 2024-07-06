@@ -20,8 +20,14 @@ export default async function (req: Request, { Component, state }: PageProps) {
             <div class="flex flex-row">
                 <Search client={signal} />
                 {username && (
-                    <div class="grow text-right">
-                        Hello {username} [<a href="/signout">Signout</a>]
+                    <div class="grow text-right mt-1">
+                        Hello {username}{" "}
+                        <a
+                            class="btn rounded bg-blue-500 text-white p-1"
+                            href="/signout"
+                        >
+                            Signout
+                        </a>
                     </div>
                 )}
                 {!username && (

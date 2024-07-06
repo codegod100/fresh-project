@@ -30,16 +30,21 @@ export default function (props) {
     }
 
     return (
-        <div>
+        <div class="p-2">
             <form onSubmit={search}>
                 <input
-                    class="border"
+                    class="input border"
                     type="search"
                     id="search"
                     incremental
                     onSearch={search}
                 />
-                <button type="submit">Search</button>
+                <button
+                    class="ml-2 btn bg-blue-500 rounded py-1 px-2 text-white"
+                    type="submit"
+                >
+                    Search
+                </button>
             </form>
             <div>{sig}</div>
         </div>

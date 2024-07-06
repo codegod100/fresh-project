@@ -9,7 +9,8 @@ export default defineRoute((req, ctx) => {
         <div>
             <form method="POST">
                 Community name
-                <input type="text" name="name" class="input border"></input>
+                <input type="text" name="name" class="input border ml-2">
+                </input>
             </form>
         </div>
     );

@@ -50,7 +50,12 @@ export default function (props: ReplyProps) {
         <div>
             <div id="response">
                 <div>
-                    <button onClick={showReply}>Reply</button>
+                    <button
+                        class="btn rounded bg-blue-500 text-white p-1"
+                        onClick={showReply}
+                    >
+                        Reply
+                    </button>
                 </div>
             </div>
             <div>
@@ -70,7 +75,12 @@ export default function (props: ReplyProps) {
                             value={props.parent_comment_id}
                         />
                         <div class="mt-2">
-                            <button type="submit">Submit</button>
+                            <button
+                                class="btn rounded bg-blue-500 text-white p-1"
+                                type="submit"
+                            >
+                                Submit
+                            </button>
                         </div>
                     </form>
                 )}
