@@ -7,7 +7,7 @@ export default defineRoute(async (req, ctx) => {
   const { data: posts, error: postsError } = await client
     .from("posts")
     .select("id, title, body, users(username), communities(name)")
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(5);
   const { data: communities, error } = await client
     .from("communities")
