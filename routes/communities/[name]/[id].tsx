@@ -14,6 +14,7 @@ import community from "../../create/community.tsx";
 
 interface Post {
     id: number;
+    user_id: string;
     username: string;
     category: string;
     title: string;
@@ -39,7 +40,7 @@ interface Data {
 }
 
 export default function ({ data }: PageProps<Data>) {
-    const { post, comments, signal } = data;
+    const { post, comments, signal, user } = data;
 
     return (
         <div class="mb-2">
@@ -54,6 +55,16 @@ export default function ({ data }: PageProps<Data>) {
                     Community: {post.community}
                 </a>
             </div>
+            {user.id == post.user_id && (
+                <div class="mt-2 mb-3">
+                    <a
+                        href={`/edit/${post.id}`}
+                        class="btn rounded bg-blue-500 text-white p-1 ml-1 "
+                    >
+                        Edit post
+                    </a>
+                </div>
+            )}
 
             <div>
                 <form method="POST">
@@ -169,7 +180,7 @@ export const handler = {
         const { data, error } = await client
             .from("posts")
             .select(
-                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id), communities(id,name)",
+                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id,user_id), communities(id,name)",
             )
             .order("created_at", {
                 referencedTable: "comments",
@@ -194,6 +205,7 @@ export const handler = {
             category: data.category,
             body: data.body,
             username: data.users.username,
+            user_id: data.users.user_id,
             community: data.communities.name,
             community_id: data.communities.id,
         };
