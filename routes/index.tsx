@@ -37,6 +37,9 @@ export default defineRoute(async (req, ctx) => {
         <RecentPosts posts={posts} />
       </div>
       <div class="text-3xl mb-2">Communities</div>
+      <div>
+        <a href="/create/community">Create new community</a>
+      </div>
       <div>{render}</div>
     </div>
   );

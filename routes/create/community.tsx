@@ -1,13 +1,15 @@
 import { defineRoute } from "$fresh/src/server/defines.ts";
 import { FreshContext } from "$fresh/server.ts";
-import { serverClient } from "../lib.ts";
+import { redirect, serverClient } from "../lib.ts";
+import { signal } from "https://esm.sh/v135/@preact/signals-core@1.5.1/dist/signals-core.js";
+import { IS_BROWSER } from "$fresh/runtime.ts";
 
 export default defineRoute((req, ctx) => {
     return (
         <div>
             <form method="POST">
                 Community name
-                <input type="text" name="name" class="input"></input>
+                <input type="text" name="name" class="input border"></input>
             </form>
         </div>
     );
@@ -33,6 +35,6 @@ export const handler = {
             .single();
         console.log({ community, communityError });
 
-        return ctx.render();
+        return redirect("/");
     },
 };

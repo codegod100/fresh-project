@@ -4,7 +4,6 @@ const kv = await Deno.openKv();
 import { Database } from "../types/supabase.ts";
 
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
-
 import { createServerClient } from "npm:@supabase/ssr";
 
 import { getCookies, setCookie } from "jsr:@std/http/cookie";
