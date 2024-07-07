@@ -1,5 +1,5 @@
 import { defineRoute } from "$fresh/server.ts";
-import { redirect, serverClient } from "../lib.ts";
+import { redirect, serverClient } from "../../lib.ts";
 
 export default defineRoute(async (req, ctx) => {
     const client = serverClient(req);

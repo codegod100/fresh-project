@@ -58,7 +58,7 @@ export default function ({ data }: PageProps<Data>) {
             {user.id == post.user_id && (
                 <div class="mt-2 mb-3">
                     <a
-                        href={`/edit/${post.id}`}
+                        href={`/edit/post/${post.id}`}
                         class="btn rounded bg-blue-500 text-white p-1 ml-1 "
                     >
                         Edit post
@@ -107,6 +107,7 @@ function fillElements(comment: Comment, user: User) {
             <div class="mb-2">
                 {user && (
                     <Reply
+                        comment_id={comment.id}
                         post_id={comment.post_id}
                         parent_comment_id={comment.id}
                     />

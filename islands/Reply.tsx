@@ -2,6 +2,7 @@ import { useSignal } from "@preact/signals";
 interface ReplyProps {
     post_id: number;
     parent_comment_id?: number;
+    comment_id: number;
 }
 export default function (props: ReplyProps) {
     async function submitComment(event) {
@@ -49,13 +50,19 @@ export default function (props: ReplyProps) {
     return (
         <div>
             <div id="response">
-                <div>
+                <div class="flex">
                     <button
-                        class="btn rounded bg-blue-500 text-white p-1"
+                        class="btn rounded bg-blue-500 text-white p-1 mr-1"
                         onClick={showReply}
                     >
                         Reply
                     </button>
+                    <a
+                        href={`/edit/comment/${props.comment_id}`}
+                        class="btn rounded bg-blue-500 text-white p-1"
+                    >
+                        Edit
+                    </a>
                 </div>
             </div>
             <div>
