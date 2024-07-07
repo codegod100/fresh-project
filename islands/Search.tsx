@@ -33,7 +33,7 @@ export default function (props) {
         <div class="p-2">
             <form onSubmit={search}>
                 <input
-                    class="input border"
+                    class="input border p-1"
                     type="search"
                     id="search"
                     incremental

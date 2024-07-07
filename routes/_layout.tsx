@@ -21,18 +21,23 @@ export default async function (req: Request, { Component, state }: PageProps) {
                 <Search client={signal} />
                 {username && (
                     <div class="grow text-right mt-1">
-                        Hello {username}{" "}
                         <a
                             class="btn rounded bg-blue-500 text-white p-1"
                             href="/signout"
                         >
                             Signout
                         </a>
+                        <div>{username}</div>
                     </div>
                 )}
                 {!username && (
                     <div class="grow text-right">
-                        <a href="/login">Login</a>
+                        <a
+                            class="bg-blue-500 text-white rounded p-2"
+                            href="/login"
+                        >
+                            Login
+                        </a>
                     </div>
                 )}
             </div>
