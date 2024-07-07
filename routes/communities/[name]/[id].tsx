@@ -55,7 +55,7 @@ export default function ({ data }: PageProps<Data>) {
                     Community: {post.community}
                 </a>
             </div>
-            {user.id == post.user_id && (
+            {user && user.id == post.user_id && (
                 <div class="mt-2 mb-3">
                     <a
                         href={`/edit/post/${post.id}`}
@@ -66,27 +66,29 @@ export default function ({ data }: PageProps<Data>) {
                 </div>
             )}
 
-            <div>
-                <form method="POST">
-                    <div>
-                        <textarea
-                            name="comment"
-                            class="border-2 m-1 w-9/12 h-28"
-                            placeholder="Enter comment..."
-                        >
-                        </textarea>
-                    </div>
+            {user && (
+                <div>
+                    <form method="POST">
+                        <div>
+                            <textarea
+                                name="comment"
+                                class="border-2 m-1 w-9/12 h-28"
+                                placeholder="Enter comment..."
+                            >
+                            </textarea>
+                        </div>
 
-                    <div class="mt-2">
-                        <button
-                            class="btn rounded bg-blue-500 text-white p-1 ml-1"
-                            type="submit"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <div class="mt-2">
+                            <button
+                                class="btn rounded bg-blue-500 text-white p-1 ml-1"
+                                type="submit"
+                            >
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
             {comments.length > 0 &&
                 (
                     <div>

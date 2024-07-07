@@ -31,7 +31,7 @@ export default async function (req: Request, { Component, state }: PageProps) {
                     </div>
                 )}
                 {!username && (
-                    <div class="grow text-right">
+                    <div class="grow text-right mt-2">
                         <a
                             class="bg-blue-500 text-white rounded p-2"
                             href="/login"

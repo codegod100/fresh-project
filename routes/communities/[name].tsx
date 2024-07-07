@@ -12,12 +12,7 @@ import RecentPosts from "../../components/RecentPosts.tsx";
 
 export default defineRoute(async (req, ctx) => {
     const client = serverClient(req);
-    // const { data: posts, error } = await client
-    //     .from("posts")
-    //     .select("title, id, category, communities(id,name), users(username)")
-    //     .eq("communities.name", ctx.params.name)
-    //     .order("created_at", { ascending: false });
-    // console.log({ posts, error, name: ctx.params.name });
+    const { data, error } = await client.auth.getUser();
     const { data: community, error: communityError } = await client
         .from("communities")
         .select(
@@ -50,14 +45,17 @@ export default defineRoute(async (req, ctx) => {
                 <div class="text-3xl mb-2">Community: {community?.name}</div>
             </div>
             <div>
-                <div class="btn ml-1  mb-3">
-                    <a
-                        class="bg-blue-500 text-white rounded p-1"
-                        href={`/create/post/${ctx.params.name}`}
-                    >
-                        Create new post
-                    </a>
-                </div>
+                {data.user &&
+                    (
+                        <div class="btn ml-1  mb-3">
+                            <a
+                                class="bg-blue-500 text-white rounded p-1"
+                                href={`/create/post/${ctx.params.name}`}
+                            >
+                                Create new post
+                            </a>
+                        </div>
+                    )}
                 <h2 class="text-2xl font-extrabold  mb-3">
                     Recent Posts
                 </h2>
