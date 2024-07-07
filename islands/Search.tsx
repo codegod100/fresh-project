@@ -5,7 +5,8 @@ import Results from "../components/Results.tsx";
 
 export default function (props) {
     const sig = signal(<div></div>);
-    async function search() {
+    async function search(event) {
+        event.preventDefault();
         const search = document.getElementById("search");
         const term = search.value;
         const resp = await fetch("/search", {
