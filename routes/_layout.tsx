@@ -25,9 +25,8 @@ export default async function (req: Request, { Component, state }: PageProps) {
                             class="btn rounded bg-blue-500 text-white p-1"
                             href="/signout"
                         >
-                            Signout
+                            Signout of {username}
                         </a>
-                        <div>{username}</div>
                     </div>
                 )}
                 {!username && (
