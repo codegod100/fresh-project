@@ -7,7 +7,7 @@ export default defineRoute(async (req, ctx) => {
   const { data, error: userError } = await client.auth.getUser();
   const { data: posts, error: postsError } = await client
     .from("posts")
-    .select("id, title, body, users(username), communities(name)")
+    .select("*, users(username), communities(name)")
     .order("created_at", { ascending: false })
     .limit(5);
   const { data: communities, error } = await client
@@ -20,6 +20,7 @@ export default defineRoute(async (req, ctx) => {
       </a>
     </div>
   ));
+
   return (
     <div class="ml-3">
       <div class="text-3xl mb-2">Recent Posts</div>

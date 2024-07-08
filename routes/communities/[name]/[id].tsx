@@ -14,6 +14,7 @@ import community from "../../create/community.tsx";
 
 interface Post {
     id: number;
+    created_at: string;
     user_id: string;
     username: string;
     category: string;
@@ -26,6 +27,7 @@ interface Community {
 interface Comment {
     id: number;
     body: string | null;
+    created_at: string;
     parent_comment_id: number | null;
     children?: Comment[];
     username: string;
@@ -50,6 +52,7 @@ export default function ({ data }: PageProps<Data>) {
             </div>
             <div>Body: {post.body}</div>
             <div>User: {post.username}</div>
+            <div>Published: {new Date(post.created_at).toLocaleString()}</div>
             <div>
                 <a href={`/communities/${post.community}`}>
                     Community: {post.community}
@@ -105,7 +108,11 @@ export default function ({ data }: PageProps<Data>) {
 function fillElements(comment: Comment, user: User) {
     return (
         <div class="pl-2 border-dotted border border-black">
-            {comment.username}: {comment.body}
+            <div>User: {comment.username}</div>
+            <div>Comment: {comment.body}</div>
+            <div>
+                Published: {new Date(comment.created_at).toLocaleString()}
+            </div>
             <div class="mb-2">
                 {user && (
                     <Reply
@@ -183,7 +190,7 @@ export const handler = {
         const { data, error } = await client
             .from("posts")
             .select(
-                "title, body, category, id, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id,user_id), communities(id,name)",
+                "*, comments(id, created_at, body, parent_comment_id, users(username)), users(username, id,user_id), communities(id,name)",
             )
             .order("created_at", {
                 referencedTable: "comments",
@@ -192,10 +199,7 @@ export const handler = {
             .eq("id", ctx.params.id)
             .single();
 
-        if (error) throw error;
-        if (!data) return;
-        if (!data.users) return;
-        const comments = data.comments;
+        const comments = data!.comments;
         const base_comments = comments.filter((c) => !c.parent_comment_id);
         for (const c of comments) {
             c.post_id = data.id;
@@ -204,6 +208,7 @@ export const handler = {
         }
         const post = {
             id: data.id,
+            created_at: data.created_at,
             title: data.title,
             category: data.category,
             body: data.body,

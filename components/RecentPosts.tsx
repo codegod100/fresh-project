@@ -4,6 +4,7 @@ interface Data {
     posts: {
         id: number;
         category: string;
+        created_at: string;
         title: string;
         body: string;
         users: { username: string };
@@ -23,6 +24,9 @@ export default function (props: Data) {
                 {post.category && <span>[{post.category}]</span>}
             </div>
             <div>Body: {post.body}</div>
+            <div>
+                Published: {new Date(post.created_at).toLocaleString()}
+            </div>
             <div>Community: {post.communities.name}</div>
             <div>
                 Author: {post.users.username}
