@@ -1,4 +1,3 @@
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import { Signal } from "@preact/signals";
 
 async function signin(supabase: Signal, redirect_url: string) {

@@ -1,5 +1,4 @@
 import Comment from "./Comment.tsx";
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 
 interface CommentProp {
     comment: Comment;

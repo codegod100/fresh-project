@@ -1,11 +1,9 @@
 import { FreshContext, RouteContext } from "$fresh/src/server/types.ts";
-import { getPostsByUser, getUser, Post, supabase, User } from "../../lib.ts";
-import { Effect } from "npm:effect";
-
+import { serverClient } from "../../lib.ts";
 export default async function ShowPosts(req: Request, ctx: RouteContext) {
     const username = ctx.params.name;
-
-    let { data, error } = await supabase
+    const client = serverClient(req);
+    let { data, error } = await client
         .from("users")
         .select("username, posts ( title, body )")
         .eq("username", username).single();
@@ -16,8 +14,6 @@ export default async function ShowPosts(req: Request, ctx: RouteContext) {
             <div>Body: {post.body}</div>
         </div>
     ));
-    // const res = await getUser();
-    // console.log({ res });
 
     return (
         <div>

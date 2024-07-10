@@ -14,7 +14,6 @@ import * as $create_community from "./routes/create/community.tsx";
 import * as $create_post_community_name_ from "./routes/create/post/[community_name].tsx";
 import * as $edit_comment_id_ from "./routes/edit/comment/[id].tsx";
 import * as $edit_post_id_ from "./routes/edit/post/[id].tsx";
-import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $lib from "./routes/lib.ts";
 import * as $login from "./routes/login.tsx";
@@ -29,7 +28,6 @@ import * as $Reply from "./islands/Reply.tsx";
 import * as $Search from "./islands/Search.tsx";
 import * as $Server from "./islands/Server.tsx";
 import * as $Signin from "./islands/Signin.tsx";
-import * as $SupaClient from "./islands/SupaClient.tsx";
 import * as $User from "./islands/User.tsx";
 import * as $Yolo from "./islands/Yolo.tsx";
 import { type Manifest } from "$fresh/server.ts";
@@ -48,7 +46,6 @@ const manifest = {
     "./routes/create/post/[community_name].tsx": $create_post_community_name_,
     "./routes/edit/comment/[id].tsx": $edit_comment_id_,
     "./routes/edit/post/[id].tsx": $edit_post_id_,
-    "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/lib.ts": $lib,
     "./routes/login.tsx": $login,
@@ -65,7 +62,6 @@ const manifest = {
     "./islands/Search.tsx": $Search,
     "./islands/Server.tsx": $Server,
     "./islands/Signin.tsx": $Signin,
-    "./islands/SupaClient.tsx": $SupaClient,
     "./islands/User.tsx": $User,
     "./islands/Yolo.tsx": $Yolo,
   },

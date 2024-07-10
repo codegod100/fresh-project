@@ -1,16 +1,7 @@
-import {
-    defineRoute,
-    FreshContext,
-    PageProps,
-    RouteContext,
-} from "$fresh/server.ts";
+import { defineRoute, FreshContext, PageProps } from "$fresh/server.ts";
 import Reply from "../../../islands/Reply.tsx";
-import { serverClient, supabase } from "../../lib.ts";
+import { serverClient } from "../../lib.ts";
 import { Signal, useSignal } from "@preact/signals";
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
-import { Tables } from "../../../types/supabase.ts";
-import { getCookies } from "jsr:@std/http/cookie";
-import community from "../../create/community.tsx";
 
 interface Post {
     id: number;

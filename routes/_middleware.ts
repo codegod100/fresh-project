@@ -1,12 +1,9 @@
 import { FreshContext } from "$fresh/server.ts";
 import { getCookies } from "jsr:@std/http/cookie";
-import { User } from "./lib.ts";
-import { createClient, SupabaseClient } from "npm:@supabase/supabase-js";
 import { Signal, signal } from "@preact/signals";
 
 export interface State {
     data: string;
-    user: User;
     supaCreds: [
         supabase_url: string,
         anon_key: string,
@@ -36,7 +33,6 @@ export async function handler(req, ctx: FreshContext) {
     let empty: SupabaseClient;
     const s = signal<SupabaseClient>(empty);
     ctx.state.signal = s;
-    ctx.state.client = createClient(supabase_url, anon_key);
     const resp = await ctx.next();
     return resp;
 }
