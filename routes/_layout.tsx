@@ -19,13 +19,13 @@ export default async function (req: Request, { Component, state }: PageProps) {
         <div class="layout">
             <div class="flex flex-row">
                 <Search client={signal} />
-                {username && (
+                {username && !true && (
                     <div class="grow text-right mt-1">
                         <a
                             class="btn rounded bg-blue-500 text-white p-1"
                             href="/signout"
                         >
-                            Signout of {username}
+                            Signout
                         </a>
                     </div>
                 )}
@@ -40,7 +40,7 @@ export default async function (req: Request, { Component, state }: PageProps) {
                     </div>
                 )}
             </div>
-            <div class="mb-4 text-5xl font-extrabold leading-none tracking-tight text-gray-900 ">
+            <div class="mb-3 text-5xl font-extrabold leading-none tracking-tight text-gray-900 ">
                 <a href="/">{Deno.env.get("SITE_NAME")}</a>
             </div>
             <Component />
