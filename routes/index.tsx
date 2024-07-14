@@ -21,8 +21,26 @@ export default defineRoute(async (req, ctx) => {
     </div>
   ));
 
+  const { data: pinnedPosts, error: pinnedError } = await client
+    .from("posts")
+    .select("*, users(username), communities(name)")
+    .order("created_at", { ascending: false })
+    .eq("pinned", true);
+
+  const pinned = pinnedPosts!.length > 0;
+
   return (
     <div class="ml-3">
+      {pinned && (
+        <div>
+          <div class="text-3xl mb-2 ">
+            <span class="bg-yellow-100">Pinned Posts</span>
+          </div>
+          <div>
+            <RecentPosts posts={pinnedPosts} />
+          </div>
+        </div>
+      )}
       <div class="text-3xl mb-2">Recent Posts</div>
       <div>
         <RecentPosts posts={posts} />
