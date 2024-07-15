@@ -3,7 +3,7 @@ import { Database } from "../types/supabase.ts";
 
 import { createServerClient } from "@supabase/ssr";
 
-import { getCookies, setCookie } from "jsr:@std/http/cookie";
+import { getCookies, setCookie } from "@std/http/cookie";
 
 interface Cookie {
     name: string;
