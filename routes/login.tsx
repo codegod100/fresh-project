@@ -1,12 +1,13 @@
 import { defineRoute } from "$fresh/server.ts";
-import { getCookies, setCookie } from "jsr:@std/http/cookie";
+import { getCookies, setCookie } from "@std/http/cookie";
 import { FreshContext, RouteContext } from "$fresh/src/server/types.ts";
-import { createServerClient } from "npm:@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import Redirect from "../islands/Redirect.tsx";
 
 interface Cookie {
     name: string;
     value: string;
+    maxAge: number;
 }
 
 const redirect_url = Deno.env.get("REDIRECT_URL") as string;
@@ -35,7 +36,12 @@ export const handler = {
                 setAll: (cookies) => {
                     console.log({ cookies });
                     cookies.forEach((cookie) => {
-                        cookiesToSet.push(cookie);
+                        const c = {
+                            name: cookie.name,
+                            value: cookie.value,
+                            maxAge: cookie.options.maxAge,
+                        };
+                        cookiesToSet.push(c);
                     });
                 },
             },
