@@ -14,9 +14,12 @@ export default defineRoute(async (req, ctx) => {
     .from("communities")
     .select();
   const render = communities!.map((community) => (
-    <div>
+    <div class="mb-2">
       <a href={`/communities/${community.name!}`}>
-        Community: {community.name!}
+        <div>Name: {community.name!}</div>
+        {community.description && (
+          <div>Description: {community.description}</div>
+        )}
       </a>
     </div>
   ));
